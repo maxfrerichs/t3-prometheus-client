@@ -1,7 +1,7 @@
 {
   "name": "maxfrerichs/typo3-prometheus",
   "type": "typo3-cms-extension",
-  "description": "This extension converts system status informations to Prometheus-readable metrics.",
+  "description": "Generates Prometheus-readable metrics from TYPO3 system status reports",
   "homepage": "https://typo3.org",
   "license": ["GPL-2.0-or-later"],
   "version": "0.1.0",
@@ -20,7 +20,7 @@
   },
   "extra": {
     "typo3/cms": {
-      "extension-key": "typo3-prometheus"
+      "extension-key": "typo3_prometheus"
     }
   },
   "autoload": {

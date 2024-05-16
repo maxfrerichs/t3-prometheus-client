@@ -30,8 +30,8 @@ class PrometheusMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         $requestPort = $request->getAttributes()['normalizedParams']->getRequestPort();
-        $metricsPath = $this->extensionConfiguration->get('typo3-prometheus', 'metricsPath');
-        $metricsPort = $this->extensionConfiguration->get('typo3-prometheus', 'metricsPort');
+        $metricsPath = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPath');
+        $metricsPort = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPort');
         
         // fuck off everyone that tries to access metrics from outside 
         if ($metricsPort && $requestPort != $metricsPort) {
@@ -44,7 +44,7 @@ class PrometheusMiddleware implements MiddlewareInterface
             /**
              * Some status reports use LanguageService defined in this global variable to translate labels, but it's not initiated at the time
              * middleware is executed. While it's discouraged to instantiate on your own, I think it's okay in this case 
-             * because no other TYPO3 stuff is to be executed afterwards
+             * because not much other TYPO3-related stuff is to be executed afterwards
              */
             $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);;
             foreach ($statusProviders as $statusProviderItem) {
