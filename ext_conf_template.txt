@@ -1,0 +1,4 @@
+# cat=General; type=int; label=Set non-public port to access metrics
+metricsPort = 32767
+# cat=General; type=string; label=Set path for metrics
+metricsPath = /metrics

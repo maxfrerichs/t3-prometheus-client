@@ -1,0 +1,37 @@
+{
+  "name": "maxfrerichs/typo3-prometheus",
+  "type": "typo3-cms-extension",
+  "description": "This extension converts system status informations to Prometheus-readable metrics.",
+  "homepage": "https://typo3.org",
+  "license": ["GPL-2.0-or-later"],
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Max Frerichs",
+      "email": "typo3@maxfrerichs.dev",
+      "role": "Developer"
+    }
+  ],
+
+  "require": {
+    "typo3/cms-reports": "^13.1 || ^12.4",
+    "typo3/cms-reactions": "^13.1 || ^12.4",
+    "promphp/prometheus_client_php": "^2.10"
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "typo3-prometheus"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "MFR\\Typo3Prometheus\\": "Classes/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
+    }
+  }
+}

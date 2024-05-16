@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  MFR\Typo3Prometheus\Middleware\PrometheusMiddleware:
+    arguments:
+      $statusRegistry: '@TYPO3\CMS\Reports\Registry\StatusRegistry'
+      $responseFactory: '@Psr\Http\Message\ResponseFactoryInterface'
+      $streamFactory: '@Psr\Http\Message\StreamFactoryInterface'
