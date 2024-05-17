@@ -18,9 +18,9 @@ use Prometheus\CollectorRegistry;
 class PrometheusMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly StatusRegistry $statusRegistry,
         private readonly ResponseFactoryInterface $responseFactory,
         private readonly StreamFactoryInterface $streamFactory,
+        private readonly ExtensionConfiguration $extensionConfiguration
     ) {
     }
 
@@ -29,11 +29,12 @@ class PrometheusMiddleware implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
         $requestPort = $request->getServerParams()['SERVER_PORT'];
+        $metricsPort = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPort');
+        $metricsPath = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPath');
 
-        if ($request->getRequestTarget() == '/metrics' && $requestPort != 80) {
-            $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-            $metricsPort = $extensionConfiguration->get('typo3_prometheus', 'metricsPort');
-            $statusProviders = $this->statusRegistry->getProviders();
+        if ($request->getRequestTarget() == $metricsPath && $requestPort != 80) {
+            $statusRegistry = GeneralUtility::makeInstance(StatusRegistry::class);
+            $statusProviders = $statusRegistry->getProviders();
             $collectorRegistry = new CollectorRegistry(new InMemory());
             // fuck off everyone that tries to access metrics from outside 
             if ($metricsPort && $requestPort != $metricsPort) {
