@@ -10,7 +10,7 @@ use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 class MetricsService
 {
     public function __construct(
-        private readonly StatusRegistry $statusRegistry,
+        private StatusRegistry $statusRegistry,
     ){}
 
     public function generate(): string
@@ -28,6 +28,7 @@ class MetricsService
         }
         $renderer = new RenderTextFormat();
         $result = $renderer->render($collectorRegistry->getMetricFamilySamples());
+        unset($this->statusRegistry);
         return $result;
     }
 }

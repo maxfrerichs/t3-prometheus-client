@@ -22,7 +22,8 @@ class PrometheusMiddleware implements MiddlewareInterface
     public function __construct(
         private readonly ResponseFactoryInterface $responseFactory,
         private readonly StreamFactoryInterface $streamFactory,
-        private readonly ExtensionConfiguration $extensionConfiguration
+        private readonly ExtensionConfiguration $extensionConfiguration,
+        private readonly MetricsService $metricsService
     ) {
     }
 
@@ -39,8 +40,7 @@ class PrometheusMiddleware implements MiddlewareInterface
             if ($metricsPort && $requestPort != $metricsPort) {
                 return $this->responseFactory->createResponse(403);
             }
-            $metricService = GeneralUtility::makeInstance(MetricsService::class);
-            $result = $metricService->generate();
+            $result = $this->metricsService->generate();
             echo $result;
             return $this->responseFactory->createResponse(200)->withHeader('Content-Type', RenderTextFormat::MIME_TYPE);
         } else {

@@ -4,6 +4,10 @@ services:
     autoconfigure: true
     public: false
 
+  MFR\Typo3Prometheus\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*'
+
   MFR\Typo3Prometheus\Middleware\PrometheusMiddleware:
     arguments:
       $responseFactory: '@Psr\Http\Message\ResponseFactoryInterface'
