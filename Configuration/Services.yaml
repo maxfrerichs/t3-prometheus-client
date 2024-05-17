@@ -8,3 +8,7 @@ services:
     arguments:
       $responseFactory: '@Psr\Http\Message\ResponseFactoryInterface'
       $streamFactory: '@Psr\Http\Message\StreamFactoryInterface'
+
+  MFR\Typo3Prometheus\Service\MetricsService:
+    arguments:
+      $statusRegistry: '@TYPO3\CMS\Reports\Registry\StatusRegistry'
