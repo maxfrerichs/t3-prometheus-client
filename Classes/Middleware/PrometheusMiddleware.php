@@ -11,6 +11,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Registry\StatusRegistry;
 use Prometheus\CollectorRegistry;
@@ -29,7 +30,7 @@ class PrometheusMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $requestPort = $request->getAttributes()['normalizedParams']->getRequestPort();
+        $requestPort = $request->getServerParams()['SERVER_PORT'];
         $metricsPath = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPath');
         $metricsPort = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPort');
 
