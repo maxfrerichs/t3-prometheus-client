@@ -47,7 +47,6 @@ class PrometheusMiddleware implements MiddlewareInterface
              * because not much other TYPO3-related stuff is to be executed afterwards
              */
             $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
-            ;
             foreach ($statusProviders as $statusProviderItem) {
                 $status = $statusProviderItem->getStatus();
                 foreach ($status as $index => $statusItem) {
