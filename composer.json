@@ -4,7 +4,7 @@
   "description": "Generates Prometheus-readable metrics from TYPO3 system status reports",
   "homepage": "https://typo3.org",
   "license": ["GPL-2.0-or-later"],
-  "version": "0.1.0",
+  "version": "0.1.2",
   "authors": [
     {
       "name": "Max Frerichs",
