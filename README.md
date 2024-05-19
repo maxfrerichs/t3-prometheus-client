@@ -24,7 +24,7 @@ This extension generates Prometheus-readable metrics from system status informat
 * Have fun!
 
 # Known issues
-Using StatusRegistry class directly via Dependency Injection causes Extbase frontend plugins to break, as ConfigurationManager is invoked without $GLOBALS['TYPO3_REQUEST'] being set, causing it to fallback to BackendConfigurationManager. This prevents us from using all registered Status reports as available Prometheus metrics
+Using StatusRegistry class directly via Dependency Injection causes Extbase frontend plugins to break, as ConfigurationManager is invoked at some point without $GLOBALS['TYPO3_REQUEST'] being set, causing it to fallback to BackendConfigurationManager, while we are in frontend. This prevents us from using all registered Status reports as available Prometheus metrics
 
 ## TODO:
 * Add some auth-key based authentication to /metrics endpoint (if someone needs to access metrics from outside)
