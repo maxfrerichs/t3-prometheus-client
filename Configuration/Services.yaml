@@ -13,6 +13,7 @@ services:
       $responseFactory: '@Psr\Http\Message\ResponseFactoryInterface'
       $streamFactory: '@Psr\Http\Message\StreamFactoryInterface'
 
-  MFR\Typo3Prometheus\Service\MetricsService:
+  MFR\Typo3Prometheus\Service\PrometheusService:
     arguments:
-      $statusRegistry: '@TYPO3\CMS\Reports\Registry\StatusRegistry'
+      $environmentStatusReport: '@TYPO3\CMS\Install\Report\EnvironmentStatusReport'
+      $installStatusReport: '@TYPO3\CMS\Install\Report\InstallStatusReport'

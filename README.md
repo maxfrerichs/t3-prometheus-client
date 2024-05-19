@@ -23,6 +23,9 @@ This extension generates Prometheus-readable metrics from system status informat
 * Add "your-site.com/metrics" to your prometheus config
 * Have fun!
 
+# Known issues
+We cannot use StatusRegistry directly.
+
 ## TODO:
 * Add some auth-key based authentication to /metrics endpoint (if someone needs to access metrics from outside)
 * Add support for other metric types (maybe).

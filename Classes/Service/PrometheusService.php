@@ -1,21 +1,26 @@
 <?php
 namespace MFR\Typo3Prometheus\Service;
-use TYPO3\CMS\Reports\Registry\StatusRegistry;
+use TYPO3\CMS\Install\Report\EnvironmentStatusReport;
+use TYPO3\CMS\Install\Report\InstallStatusReport;
 use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 use Prometheus\Storage\InMemory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 
-class MetricsService
+class PrometheusService
 {
     public function __construct(
-        private StatusRegistry $statusRegistry,
+        private EnvironmentStatusReport $environmentStatusReport,
+        private InstallStatusReport $installStatusReport
     ){}
 
     public function generate(): string
     {
-        $statusProviders = $this->statusRegistry->getProviders();
+        $statusProviders = [
+            $this->environmentStatusReport,
+            $this->installStatusReport
+        ];
         $collectorRegistry = new CollectorRegistry(new InMemory());
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
         foreach ($statusProviders as $statusProviderItem) {
