@@ -19,8 +19,7 @@ class PrometheusMiddleware implements MiddlewareInterface
         private readonly StreamFactoryInterface $streamFactory,
         private readonly ExtensionConfiguration $extensionConfiguration,
         private readonly PrometheusService $prometheusService
-    ) {
-    }
+    ) {}
 
     public function process(
         ServerRequestInterface $request,
