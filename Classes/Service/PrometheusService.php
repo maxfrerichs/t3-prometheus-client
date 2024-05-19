@@ -18,13 +18,13 @@ class PrometheusService
         private readonly EventDispatcherInterface $eventDispatcher,
     ){}
 
-    public function generate(): string
+    public function renderMetrics(): string
     {
         $statusProviders = [
             $this->environmentStatusReport,
             $this->installStatusReport
         ];
-        
+
         $this->eventDispatcher->dispatch(new CustomStatusProviderEvent($statusProviders));
 
         $collectorRegistry = new CollectorRegistry(new InMemory());

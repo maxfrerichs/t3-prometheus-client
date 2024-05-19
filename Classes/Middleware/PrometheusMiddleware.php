@@ -34,7 +34,7 @@ class PrometheusMiddleware implements MiddlewareInterface
             if ($metricsPort && $requestPort != $metricsPort) {
                 return $this->responseFactory->createResponse(403);
             }
-            $result = $this->prometheusService->generate();
+            $result = $this->prometheusService->renderMetrics();
             echo $result;
             return $this->responseFactory->createResponse(200)->withHeader('Content-Type', RenderTextFormat::MIME_TYPE);
         } else {
