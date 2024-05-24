@@ -4,7 +4,10 @@ return [
         "mfr/typo3-prometheus" => [
             "target" =>
                 \MFR\Typo3Prometheus\Middleware\PrometheusMiddleware::class,
-            "before" => ["typo3/cms-frontend/site"],
+            "before" => [
+                "typo3/cms-core/verify-host-header",
+                "typo3/cms-frontend/site"
+            ],
         ],
     ],
 ];
