@@ -2,9 +2,11 @@
   "name": "maxfrerichs/typo3-prometheus",
   "type": "typo3-cms-extension",
   "description": "Generates Prometheus-readable metrics from TYPO3 system status reports",
-  "homepage": "https://typo3.org",
-  "license": ["GPL-2.0-or-later"],
-  "version": "0.2.1",
+  "homepage": "https://maxfrerichs.dev",
+  "license": [
+    "GPL-2.0-or-later"
+  ],
+  "version": "0.2.2",
   "authors": [
     {
       "name": "Max Frerichs",
@@ -12,7 +14,6 @@
       "role": "Developer"
     }
   ],
-
   "require": {
     "typo3/cms-reports": "^13.1 || ^12.4",
     "typo3/cms-reactions": "^13.1 || ^12.4",
@@ -26,12 +27,6 @@
   "autoload": {
     "psr-4": {
       "MFR\\Typo3Prometheus\\": "Classes/"
-    }
-  },
-  "config": {
-    "allow-plugins": {
-      "typo3/class-alias-loader": true,
-      "typo3/cms-composer-installers": true
     }
   }
 }
