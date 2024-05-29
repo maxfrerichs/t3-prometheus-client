@@ -21,7 +21,6 @@ This extension generates Prometheus-readable metrics from system status informat
 
 ## How to use:
 * Install extension with ```composer req maxfrerichs/typo3-prometheus``` in your favourite TYPO3 distribution
-* Adjust trustedHostPattern config.
 * Add "your-site.com/metrics" to your prometheus config (more information coming soon)
 * Have fun!
 
