@@ -18,7 +18,7 @@
   },
   "require": {
     "php": ">=8.1",
-    "typo3/cms-reports": "^11.5 || 12.4 || ^13.1",
+    "typo3/cms-reports": "^11.5 || ^12.4 || ^13.1",
     "promphp/prometheus_client_php": "^2.10"
   },
   "extra": {
