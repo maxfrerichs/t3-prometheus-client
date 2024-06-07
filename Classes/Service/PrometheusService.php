@@ -1,6 +1,7 @@
 <?php
 namespace MFR\Typo3Prometheus\Service;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Install\Report\EnvironmentStatusReport;
 use TYPO3\CMS\Install\Report\InstallStatusReport;
 use Prometheus\CollectorRegistry;
@@ -16,6 +17,7 @@ class PrometheusService
         private EnvironmentStatusReport $environmentStatusReport,
         private InstallStatusReport $installStatusReport,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private Typo3Version $typo3Version
     ){}
 
     public function renderMetrics(): string
@@ -34,7 +36,8 @@ class PrometheusService
             foreach ($status as $index => $statusItem) {
                 $metricName = strtolower(preg_replace("/[ .\/,-]/", "", $statusItem->getTitle())) . (string) $index;
                 $gauge = $collectorRegistry->registerGauge("typo3", $metricName, "severity", ['severity', 'message']);
-                $gauge->set((float) $statusItem->getSeverity()->value, [$statusItem->getSeverity()->value, strip_tags($statusItem->getMessage())]);
+                $severity = str_contains($this->typo3Version->getVersion(), '11.5') ? $statusItem->getSeverity() : $statusItem->getSeverity()->value;
+                $gauge->set((float) $severity, [$severity, strip_tags($statusItem->getMessage())]);
             }
         }
         $renderer = new RenderTextFormat();
