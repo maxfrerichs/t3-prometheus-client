@@ -8,7 +8,7 @@ use Prometheus\RenderTextFormat;
 use Prometheus\Storage\InMemory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
-use MFR\Typo3Prometheus\Event\CustomStatusProviderEvent;
+use MFR\Typo3Prometheus\Event\RegisterStatusProviderEvent;
 
 class PrometheusService
 {
@@ -25,7 +25,7 @@ class PrometheusService
             $this->installStatusReport
         ];
 
-        $this->eventDispatcher->dispatch(new CustomStatusProviderEvent($statusProviders));
+        $this->eventDispatcher->dispatch(new RegisterStatusProviderEvent($statusProviders));
 
         $collectorRegistry = new CollectorRegistry(new InMemory());
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
@@ -33,13 +33,12 @@ class PrometheusService
             $status = $statusProviderItem->getStatus();
             foreach ($status as $index => $statusItem) {
                 $metricName = strtolower(preg_replace("/[ .\/,-]/", "", $statusItem->getTitle())) . (string) $index;
-                $gauge = $collectorRegistry->registerGauge("typo3", $metricName, "severity", ['message']);
-                $gauge->set((float) $statusItem->getSeverity()->value, [strip_tags($statusItem->getMessage())]);
+                $gauge = $collectorRegistry->registerGauge("typo3", $metricName, "severity", ['severity', 'message']);
+                $gauge->set((float) $statusItem->getSeverity()->value, [$statusItem->getSeverity()->value, strip_tags($statusItem->getMessage())]);
             }
         }
         $renderer = new RenderTextFormat();
         $result = $renderer->render($collectorRegistry->getMetricFamilySamples());
-        unset($this->statusRegistry);
         return $result;
     }
 }

@@ -28,10 +28,9 @@ class PrometheusMiddleware implements MiddlewareInterface
         $requestPort = $request->getServerParams()['SERVER_PORT'];
         $metricsPort = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPort') ?? 9090;
         $metricsPath = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPath');
- 
-        if ($request->getRequestTarget() == $metricsPath && $requestPort != 80 && $requestPort != 443) {
-            // fuck off everyone that tries to access metrics from outside 
-            if ($requestPort != $metricsPort) {
+        if (($request->getRequestTarget() == $metricsPath)) {
+            // block access from HTTP ports.
+            if ($requestPort != $metricsPort || $requestPort == 80 || $requestPort == 443) {
                 return $this->responseFactory->createResponse(403);
             }
             $result = $this->prometheusService->renderMetrics();

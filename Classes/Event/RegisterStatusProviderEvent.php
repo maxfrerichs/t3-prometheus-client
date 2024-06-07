@@ -2,7 +2,7 @@
 namespace MFR\Typo3Prometheus\Event;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
-final class CustomStatusProviderEvent
+final class RegisterStatusProviderEvent
 {
     public function __construct(
         private array &$statusProviders
@@ -12,5 +12,10 @@ final class CustomStatusProviderEvent
     public function injectStatusProvider(StatusProviderInterface $statusProvider)
     {
         array_push($this->statusProviders, $statusProvider);
+    }
+
+    public function getStatusProvdiers()
+    {
+        return $this->statusProviders;
     }
 }
