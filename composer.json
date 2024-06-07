@@ -15,7 +15,6 @@
   ],
   "require": {
     "typo3/cms-reports": "^11.5 || 12.4 || ^12.4",
-    "typo3/cms-reactions": "^11.5 || 12.4 || ^12.4",
     "promphp/prometheus_client_php": "^2.10"
   },
   "extra": {
