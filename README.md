@@ -23,7 +23,8 @@ This extension generates Prometheus-readable metrics from system status informat
 * Using the StatusRegistry class directly via Dependency Injection causes Extbase frontend plugins to break, as ConfigurationManager is invoked at some point without $GLOBALS['TYPO3_REQUEST'] being set, causing it to fallback to BackendConfigurationManager, while we are in frontend. This prevents us from automatically aggregating all registered Status reports as Prometheus metrics and some status reports relying on Extbase functionality cannot be used.
 
 ## API
-Registration of custom StatusProvider classes is possible by creating event listeners listening to the RegisterStatusProviderEvent and call $event->injectStatusProvider() in your Event Listener
+Registration of custom StatusProvider classes is possible by creating event listeners listening to the RegisterStatusProviderEvent and call $event->injectStatusProvider() in your event listener.
+Note: When using TYPO3 11.5, you may need to make classes implementing StatusProviderInterface public in your Configuration/Service.yaml file. 
 
 ## TODO:
 * Add support for other metric types (optional).
