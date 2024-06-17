@@ -4,7 +4,7 @@
 This extension generates Prometheus-readable metrics from system status informations (more info on "How it works") and exposes them on an endpoint.
 
 ## Requirements
-* TYPO3 12.4 or higher
+* TYPO3 11.5 or higher
 * PHP 8.0 or higher
 
 # How it works
