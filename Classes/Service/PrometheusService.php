@@ -1,15 +1,17 @@
 <?php
-namespace MFR\Typo3Prometheus\Service;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Install\Report\EnvironmentStatusReport;
-use TYPO3\CMS\Install\Report\InstallStatusReport;
+
+namespace MFR\T3PromClient\Service;
+
+use MFR\T3PromClient\Event\RegisterStatusProviderEvent;
 use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 use Prometheus\Storage\InMemory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
-use MFR\Typo3Prometheus\Event\RegisterStatusProviderEvent;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Report\EnvironmentStatusReport;
+use TYPO3\CMS\Install\Report\InstallStatusReport;
 
 class PrometheusService
 {
@@ -18,13 +20,14 @@ class PrometheusService
         private InstallStatusReport $installStatusReport,
         private readonly EventDispatcherInterface $eventDispatcher,
         private Typo3Version $typo3Version
-    ){}
+    ) {
+    }
 
     public function renderMetrics(): string
     {
         $statusProviders = [
             $this->environmentStatusReport,
-            $this->installStatusReport
+            $this->installStatusReport,
         ];
 
         $this->eventDispatcher->dispatch(new RegisterStatusProviderEvent($statusProviders));
@@ -34,10 +37,10 @@ class PrometheusService
         foreach ($statusProviders as $statusProviderItem) {
             $status = $statusProviderItem->getStatus();
             foreach ($status as $index => $statusItem) {
-                $metricName = strtolower(preg_replace("/[ .\/,-]/", "", $statusItem->getTitle())) . (string) $index;
-                $gauge = $collectorRegistry->registerGauge("typo3", $metricName, "severity", ['severity', 'message']);
-                $severity = str_contains($this->typo3Version->getVersion(), '11.5') ? $statusItem->getSeverity() : $statusItem->getSeverity()->value;
-                $gauge->set((float) $severity, [$severity, strip_tags($statusItem->getMessage())]);
+                $metricName = strtolower(preg_replace("/[ .\/,-]/", '', $statusItem->getTitle())) . (string)$index;
+                $gauge = $collectorRegistry->registerGauge('typo3', $metricName, 'severity', ['severity', 'message']);
+                $severity = $statusItem->getSeverity()->value;
+                $gauge->set((float)$severity, [$severity, strip_tags($statusItem->getMessage())]);
             }
         }
         $renderer = new RenderTextFormat();
