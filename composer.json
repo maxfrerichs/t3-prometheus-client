@@ -1,34 +1,63 @@
 {
-  "name": "maxfrerichs/typo3-prometheus",
-  "type": "typo3-cms-extension",
-  "description": "Generates Prometheus-readable metrics from TYPO3 system status reports",
-  "homepage": "https://maxfrerichs.dev",
-  "license": [
-    "GPL-2.0-or-later"
-  ],
-  "authors": [
-    {
-      "name": "Max Frerichs",
-      "email": "typo3@maxfrerichs.dev",
-      "role": "Developer"
+    "name": "maxfrerichs/t3-prometheus-client",
+    "type": "typo3-cms-extension",
+    "description": "TYPO3 client for Prometheus-readable metrics from TYPO3 system status reports",
+    "homepage": "https://maxfrerichs.dev",
+    "license": [
+        "GPL-2.0-or-later"
+    ],
+    "authors": [
+        {
+            "name": "Max Frerichs",
+            "email": "typo3@maxfrerichs.dev",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "typo3@maxfrerichs.dev"
+    },
+    "require": {
+        "php": ">=8.2",
+        "typo3/cms-reports": "^12.4 || ^13.4",
+        "typo3/cms-core": "^12.4 || ^13.4",
+        "promphp/prometheus_client_php": "^2.13"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "typo3/testing-framework": "^8.0",
+        "typo3/coding-standards": "^0.5.5",
+        "phpunit/phpunit": "^10.0",
+        "friendsofphp/php-cs-fixer": "^3.51"
+    },
+    "config": {
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        },
+        "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "t3_prometheus_client",
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "web-dir": ".Build/Web",
+            "app-dir": ".Build"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "MFR\\T3PromClient\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+                "Stan\\StanDocuments\\Tests\\": "Tests"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+                "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
+        ]
     }
-  ],
-  "support": {
-    "email": "typo3@maxfrerichs.dev"
-  },
-  "require": {
-    "php": ">=8.1",
-    "typo3/cms-reports": "^11.5 || ^12.4 || ^13.1",
-    "promphp/prometheus_client_php": "^2.10"
-  },
-  "extra": {
-    "typo3/cms": {
-      "extension-key": "typo3_prometheus"
-    }
-  },
-  "autoload": {
-    "psr-4": {
-      "MFR\\Typo3Prometheus\\": "Classes/"
-    }
-  }
 }

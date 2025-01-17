@@ -4,11 +4,11 @@ services:
     autoconfigure: true
     public: false
 
-  MFR\Typo3Prometheus\:
+  MFR\T3PromClient\:
     resource: '../Classes/*'
     exclude: '../Classes/Domain/Model/*'
 
-  MFR\Typo3Prometheus\Middleware\PrometheusMiddleware:
+  MFR\T3PromClient\Middleware\PrometheusMiddleware:
     arguments:
       $responseFactory: '@Psr\Http\Message\ResponseFactoryInterface'
       $streamFactory: '@Psr\Http\Message\StreamFactoryInterface'
@@ -19,7 +19,7 @@ services:
   TYPO3\CMS\Install\Report\InstallStatusReport:
     public: true
 
-  MFR\Typo3Prometheus\Service\PrometheusService:
+  MFR\T3PromClient\Service\PrometheusService:
     arguments:
       $environmentStatusReport: '@TYPO3\CMS\Install\Report\EnvironmentStatusReport'
       $installStatusReport: '@TYPO3\CMS\Install\Report\InstallStatusReport'

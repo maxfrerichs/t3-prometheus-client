@@ -1,0 +1,22 @@
+name: t3-prometheus-client CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up testing environment
+        run: ./Build/Scripts/runTests.sh -s composer install
+
+      - name: Set up testing environment
+        run: ./Build/Scripts/runTests.sh -s phpstan

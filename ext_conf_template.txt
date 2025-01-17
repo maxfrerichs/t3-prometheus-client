@@ -1,4 +1,4 @@
-# cat=General; type=int; label=Set non-standard port to access metrics (default 9090)
-metricsPort = 9090
-# cat=General; type=string; label=Set path for metrics
-metricsPath = /metrics
+# cat=General; type=int; label=Port for accessing timeseries data (default 9090)
+port = 9090
+# cat=General; type=string; label=Set path for timeseries
+path = /metrics
