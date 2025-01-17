@@ -15,8 +15,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up testing environment
+      - name: Bootstrap testing environment
         run: ./Build/Scripts/runTests.sh -s composer install
 
-      - name: Set up testing environment
+      - name: Run phpstan
         run: ./Build/Scripts/runTests.sh -s phpstan
