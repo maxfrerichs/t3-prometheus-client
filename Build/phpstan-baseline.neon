@@ -1,0 +1,37 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Property MFR\\T3PromClient\\Middleware\\PrometheusMiddleware\:\:\$streamFactory is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: ../Classes/Middleware/PrometheusMiddleware.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: mixed$#'
+			identifier: match.unhandled
+			count: 1
+			path: ../Classes/Report/ScnedulerTaskReport.php
+
+		-
+			message: '#^Parameter \$environmentStatusReport of method MFR\\T3PromClient\\Service\\PrometheusService\:\:__construct\(\) has invalid type TYPO3\\CMS\\Install\\Report\\EnvironmentStatusReport\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../Classes/Service/PrometheusService.php
+
+		-
+			message: '#^Parameter \$installStatusReport of method MFR\\T3PromClient\\Service\\PrometheusService\:\:__construct\(\) has invalid type TYPO3\\CMS\\Install\\Report\\InstallStatusReport\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../Classes/Service/PrometheusService.php
+
+		-
+			message: '#^Property MFR\\T3PromClient\\Service\\PrometheusService\:\:\$environmentStatusReport has unknown class TYPO3\\CMS\\Install\\Report\\EnvironmentStatusReport as its type\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../Classes/Service/PrometheusService.php
+
+		-
+			message: '#^Property MFR\\T3PromClient\\Service\\PrometheusService\:\:\$installStatusReport has unknown class TYPO3\\CMS\\Install\\Report\\InstallStatusReport as its type\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../Classes/Service/PrometheusService.php

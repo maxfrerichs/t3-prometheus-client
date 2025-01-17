@@ -7,7 +7,6 @@ use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 use Prometheus\Storage\InMemory;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Report\EnvironmentStatusReport;
@@ -19,7 +18,6 @@ class PrometheusService
         private EnvironmentStatusReport $environmentStatusReport,
         private InstallStatusReport $installStatusReport,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private Typo3Version $typo3Version
     ) {
     }
 

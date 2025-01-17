@@ -630,16 +630,12 @@ case ${TEST_SUITE} in
         SUITE_EXIT_CODE=$?
         ;;
     phpstan)
-        if [ ${PHP_VERSION} == "7.4" ]; then
-          COMMAND=(php -dxdebug.mode=off .Build/bin/phpstan analyse -c Build/phpstan${TYPO3}-7.4.neon --no-progress --no-interaction --memory-limit 4G "$@")
-        else
-          COMMAND=(php -dxdebug.mode=off .Build/bin/phpstan analyse -c Build/phpstan${TYPO3}.neon --no-progress --no-interaction --memory-limit 4G "$@")
-        fi
+        COMMAND=(php -dxdebug.mode=off .Build/bin/phpstan analyse -c Build/phpstan.neon --no-progress --no-interaction --memory-limit 4G "$@")
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name phpstan-${SUFFIX} ${IMAGE_PHP} "${COMMAND[@]}"
         SUITE_EXIT_CODE=$?
         ;;
     phpstanGenerateBaseline)
-        COMMAND=(php -dxdebug.mode=off .Build/bin/phpstan analyse -c Build/phpstan${TYPO3}.neon --no-progress --no-interaction --memory-limit 4G --generate-baseline=Build/phpstan-baseline-${TYPO3}.neon "$@")
+        COMMAND=(php -dxdebug.mode=off .Build/bin/phpstan analyse -c Build/phpstan.neon --no-progress --no-interaction --memory-limit 4G --generate-baseline=Build/phpstan-baseline.neon "$@")
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name phpstan-baseline-${SUFFIX} ${IMAGE_PHP} "${COMMAND[@]}"
         SUITE_EXIT_CODE=$?
         ;;

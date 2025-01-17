@@ -31,17 +31,19 @@ class SchedulerTaskStatus implements StatusProviderInterface
             )->andWhere(
                 $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
             )->executeQuery()->fetchOne();
-
+        $status = [];
         match ($count) {
             $count == 0 => $status = new Status(
+                title: 'Scheduler task status',
                 severity: ContextualFeedbackSeverity::OK,
                 message: 'No failed Scheduler tasks',
-                value: $count
+                value: (string)$count
             ),
             $count >= 1 => $status = new Status(
+                title: 'Scheduler task status',
                 severity: ContextualFeedbackSeverity::ERROR,
                 message: 'No failed Scheduler tasks',
-                value: $count
+                value: (string)$count
             )
         };
         return [$status];
