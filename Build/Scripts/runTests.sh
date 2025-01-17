@@ -301,7 +301,7 @@ HOST_UID=$(id -u)
 HOST_PID=$(id -g)
 USERSET=""
 SUFFIX=$(echo $RANDOM)
-NETWORK="stan-container-${SUFFIX}"
+NETWORK="t3promclient-ci-container-${SUFFIX}"
 PHPUNIT_EXCLUDE_GROUPS="${PHPUNIT_EXCLUDE_GROUPS:-}"
 
 # Option parsing updates above default vars
