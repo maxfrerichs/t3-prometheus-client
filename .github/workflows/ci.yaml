@@ -6,34 +6,40 @@ on:
     branches:
       - main
 jobs:
-  ci_setup:
-    name: build
+  ci_setup_v13:
+    name: Setup CI for TYPO3 13.4
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
       - name: Bootstrap testing environment
-        run: ./Build/Scripts/runTests.sh -s composer install
+        run: ./Build/Scripts/runTests.sh -t 13 -p 8.4 -s composer install
 
-  run_tests_for_v12:
-    name: build
+  ci_setup_v12:
+    name: Setup CI for TYPO3 12.4
     runs-on: ubuntu-latest
-    needs: ci_setup
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
       - name: Bootstrap testing environment
-        run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s phpstan
+        run: ./Build/Scripts/runTests.sh -t 13 -p 8.4 -s composer install
 
   run_tests_for_v13:
     name: build
     runs-on: ubuntu-latest
-    needs: ci_setup
+    needs: ci_setup_v13
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
       - name: Bootstrap testing environment
         run: ./Build/Scripts/runTests.sh -t 13 -p 8.4 -s phpstan
+
+  run_tests_for_v12:
+    name: Run Tests for TYPO3 12.4
+    runs-on: ubuntu-latest
+    needs: ci_setup_v12
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Bootstrap testing environment
+        run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s phpstan
