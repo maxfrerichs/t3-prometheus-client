@@ -126,12 +126,10 @@ Usage: $0 [options] [file]
 Options:
     -s <...>
         Specifies the test suite to run
-            - acceptance: backend acceptance tests
             - cgl: test and fix all core php files
             - composer: "composer" command dispatcher, to execute various composer commands
             - composerInstall: "composer install", handy if host has no PHP, uses composer cache of users home
             - composerValidate: "composer validate"
-            - functional: functional tests
             - lint: PHP linting
             - phpstan: phpstan tests
             - phpstanGenerateBaseline: regenerate phpstan baseline, handy after phpstan updates
@@ -142,27 +140,18 @@ Options:
             - podman (default)
             - docker
 
-    -p <7.4|8.0|8.1|8.2|8.3|8.4>
+    -p <8.0|8.1|8.2|8.3|8.4>
         Specifies the PHP minor version to be used
             - 8.1: use PHP 8.1
             - 8.2 (default): use PHP 8.2
             - 8.3: use PHP 8.3
             - 8.4: use PHP 8.4
 
-    -t <11|12|13>
+    -t <12|13>
         Specifies the TYPO3 Core version to be used - Only with -s composerInstall|phpstan|acceptance
           - 12: Use TYPO3 v12.4
           - 13 (default): Use TYPO3 v13.x
 
-    -a <mysqli|pdo_mysql>
-        Only with -s functional|functionalDeprecated
-        Specifies to use another driver, following combinations are available:
-            - mysql
-                - mysqli (default)
-                - pdo_mysql
-            - mariadb
-                - mysqli (default)
-                - pdo_mysql
 
     -d <sqlite|mariadb|mysql|postgres>
         Only with -s functional|functionalDeprecated|acceptance|acceptanceInstall
@@ -304,6 +293,9 @@ SUFFIX=$(echo $RANDOM)
 NETWORK="t3promclient-ci-container-${SUFFIX}"
 PHPUNIT_EXCLUDE_GROUPS="${PHPUNIT_EXCLUDE_GROUPS:-}"
 
+HTTP_PORT=9090
+METRICS_ENDPOINT="/metrics"
+METRICS_AUTH="Bearer testToken123"
 # Option parsing updates above default vars
 # Reset in case getopts has been used previously in the shell
 OPTIND=1
@@ -458,68 +450,6 @@ fi
 
 # Suite execution
 case ${TEST_SUITE} in
-    acceptance)
-        rm -rf ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/AcceptanceReports
-        mkdir -p ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance
-        CODECEPION_ENV="--env ci,classic"
-        if [ "${ACCEPTANCE_HEADLESS}" -eq 1 ]; then
-            CODECEPION_ENV="--env ci,classic,headless"
-        fi
-        COMMAND=(.Build/vendor/codeception/codeception/codecept run Backend -d -c Tests/codeception.yml ${CODECEPION_ENV} "$@" --html reports.html)
-        SELENIUM_GRID=""
-        if [ "${ACCEPTANCE_HEADLESS}" -eq 0 ]; then
-            SELENIUM_GRID="-p 7900:7900 -e SE_VNC_NO_PASSWORD=1 -e VNC_NO_PASSWORD=1"
-        fi
-        ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d ${SELENIUM_GRID} --name ac-chrome-${SUFFIX} --network ${NETWORK} --network-alias chrome --tmpfs /dev/shm:rw,nosuid,nodev,noexec ${IMAGE_SELENIUM} >/dev/null
-        if [ ${CONTAINER_BIN} = "docker" ]; then
-            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${IMAGE_PHP} php -S web:8000 -t ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance >/dev/null
-        else
-            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name ac-web-${SUFFIX} --network ${NETWORK} --network-alias web -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance ${IMAGE_PHP} php -S web:8000 -t ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/acceptance >/dev/null
-        fi
-        waitFor chrome 4444
-        if [ "${ACCEPTANCE_HEADLESS}" -eq 0 ]; then
-            waitFor chrome 7900
-        fi
-        waitFor web 8000
-        if [ "${ACCEPTANCE_HEADLESS}" -eq 0 ] && type "xdg-open" >/dev/null; then
-            xdg-open http://localhost:7900/?autoconnect=1 >/dev/null
-        elif [ "${ACCEPTANCE_HEADLESS}" -eq 0 ] && type "open" >/dev/null; then
-            open http://localhost:7900/?autoconnect=1 >/dev/null
-        fi
-        case ${DBMS} in
-            mariadb)
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} --name mariadb-ac-${SUFFIX} --network ${NETWORK} -d -e MYSQL_ROOT_PASSWORD=funcp --tmpfs /var/lib/mysql/:rw,noexec,nosuid ${IMAGE_MARIADB} >/dev/null
-                DATABASE_IP=$(${CONTAINER_BIN} inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mariadb-ac-${SUFFIX})
-                waitFor mariadb-ac-${SUFFIX} 3306
-                CONTAINERPARAMS="-e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP}"
-                ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-mariadb ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
-                SUITE_EXIT_CODE=$?
-                ;;
-            mysql)
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} --name mysql-ac-${SUFFIX} --network ${NETWORK} -d -e MYSQL_ROOT_PASSWORD=funcp --tmpfs /var/lib/mysql/:rw,noexec,nosuid ${IMAGE_MYSQL} >/dev/null
-                DATABASE_IP=$(${CONTAINER_BIN} inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql-ac-${SUFFIX})
-                waitFor mysql-ac-${SUFFIX} 3306 2
-                CONTAINERPARAMS="-e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP}"
-                ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-mysql ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
-                SUITE_EXIT_CODE=$?
-                ;;
-            postgres)
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} --name postgres-ac-${SUFFIX} --network ${NETWORK} -d -e POSTGRES_PASSWORD=funcp -e POSTGRES_USER=funcu --tmpfs /var/lib/postgresql/data:rw,noexec,nosuid ${IMAGE_POSTGRES} >/dev/null
-                DATABASE_IP=$(${CONTAINER_BIN} inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres-ac-${SUFFIX})
-                waitFor postgres-ac-${SUFFIX} 5432
-                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_pgsql -e typo3DatabaseName=func_test -e typo3DatabaseUsername=funcu -e typo3DatabasePassword=funcp -e typo3DatabaseHost=${DATABASE_IP}"
-                ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-postgres ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
-                SUITE_EXIT_CODE=$?
-                ;;
-            sqlite)
-                rm -rf "${CORE_ROOT}/typo3temp/var/tests/acceptance-sqlite-dbs/"
-                mkdir -p "${CORE_ROOT}/typo3temp/var/tests/acceptance-sqlite-dbs/"
-                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_sqlite"
-                ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name ac-sqlite ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
-                SUITE_EXIT_CODE=$?
-                ;;
-        esac
-        ;;
     cgl)
           # Active dry-run for cgl needs not "-n" but specific options
           if [ -n "${CGLCHECK_DRY_RUN}" ]; then
@@ -564,9 +494,6 @@ case ${TEST_SUITE} in
           fi
           ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name composer-validate-${SUFFIX} -e COMPOSER_CACHE_DIR=.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} /bin/sh -c "
             php -v | grep '^PHP';
-            if [ ${TYPO3} -eq 11 ]; then
-              composer require typo3/cms-core:^11.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
-              composer prepare-tests
             elif [ ${TYPO3} -eq 13 ]; then
               composer require typo3/cms-core:^13.0 --dev -W --no-progress --no-interaction
               composer prepare-tests
@@ -580,45 +507,6 @@ case ${TEST_SUITE} in
           cp composer.json composer.json.testing
           mv composer.json.orig composer.json
         ;;
-    functional)
-        PHPUNIT_EXCLUDE_GROUPS+=",not-${DBMS}"
-        PHPUNIT_EXCLUDE_GROUPS="${PHPUNIT_EXCLUDE_GROUPS#,}"
-        PHPUNIT_EXCLUDE_GROUPS="${PHPUNIT_EXCLUDE_GROUPS%,}"
-        COMMAND=(.Build/bin/phpunit -c Build/phpunit/FunctionalTests.xml --exclude-group ${PHPUNIT_EXCLUDE_GROUPS} "$@")
-        case ${DBMS} in
-            mariadb)
-                echo "Using driver: ${DATABASE_DRIVER}"
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} --name mariadb-func-${SUFFIX} --network ${NETWORK} -d -e MYSQL_ROOT_PASSWORD=funcp --tmpfs /var/lib/mysql/:rw,noexec,nosuid ${IMAGE_MARIADB} >/dev/null
-                waitFor mariadb-func-${SUFFIX} 3306
-                CONTAINERPARAMS="-e typo3DatabaseDriver=${DATABASE_DRIVER} -e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabaseHost=mariadb-func-${SUFFIX} -e typo3DatabasePassword=funcp"
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} ${CONTAINER_COMMON_PARAMS} --name functional-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
-                SUITE_EXIT_CODE=$?
-                ;;
-            mysql)
-                echo "Using driver: ${DATABASE_DRIVER}"
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} --name mysql-func-${SUFFIX} --network ${NETWORK} -d -e MYSQL_ROOT_PASSWORD=funcp --tmpfs /var/lib/mysql/:rw,noexec,nosuid ${IMAGE_MYSQL} >/dev/null
-                waitFor mysql-func-${SUFFIX} 3306 2
-                CONTAINERPARAMS="-e typo3DatabaseDriver=${DATABASE_DRIVER} -e typo3DatabaseName=func_test -e typo3DatabaseUsername=root -e typo3DatabaseHost=mysql-func-${SUFFIX} -e typo3DatabasePassword=funcp"
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} ${CONTAINER_COMMON_PARAMS} --name functional-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
-                SUITE_EXIT_CODE=$?
-                ;;
-            postgres)
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} --name postgres-func-${SUFFIX} --network ${NETWORK} -d -e POSTGRES_PASSWORD=funcp -e POSTGRES_USER=funcu --tmpfs /var/lib/postgresql/data:rw,noexec,nosuid ${IMAGE_POSTGRES} >/dev/null
-                waitFor postgres-func-${SUFFIX} 5432
-                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_pgsql -e typo3DatabaseName=bamboo -e typo3DatabaseUsername=funcu -e typo3DatabaseHost=postgres-func-${SUFFIX} -e typo3DatabasePassword=funcp"
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} ${CONTAINER_COMMON_PARAMS} --name functional-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
-                SUITE_EXIT_CODE=$?
-                ;;
-            sqlite)
-                # create sqlite tmpfs mount typo3temp/var/tests/functional-sqlite-dbs/ to avoid permission issues
-                rm -rf "${CORE_ROOT}/.Build/Web/typo3temp/var/tests/functional-sqlite-dbs"
-                mkdir -p "${CORE_ROOT}/.Build/Web/typo3temp/var/tests/functional-sqlite-dbs/"
-                CONTAINERPARAMS="-e typo3DatabaseDriver=pdo_sqlite --tmpfs ${CORE_ROOT}/.Build/Web/typo3temp/var/tests/functional-sqlite-dbs/:rw,noexec,nosuid"
-                ${CONTAINER_BIN} run --rm ${CI_PARAMS} ${CONTAINER_COMMON_PARAMS} --name functional-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${CONTAINERPARAMS} ${IMAGE_PHP} "${COMMAND[@]}"
-                SUITE_EXIT_CODE=$?
-                ;;
-        esac
-        ;;
     help)
             loadHelp
             echo "${HELP}"
@@ -627,6 +515,62 @@ case ${TEST_SUITE} in
     lint)
         COMMAND='php -v | grep '^PHP'; find . -name \\*.php ! -path "./.Build/\\*" -print0 | xargs -0 -n1 -P4 php -dxdebug.mode=off -l >/dev/null'
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name lint-php-${SUFFIX} ${IMAGE_PHP} bash -c "${COMMAND}"
+        SUITE_EXIT_CODE=$?
+        ;;
+    metrics)
+        echo "Testing /metrics endpoint..."
+        # Start web server with TYPO3 instance
+        if [ ${CONTAINER_BIN} = "docker" ]; then
+            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name metrics-web-${SUFFIX} \
+                --network ${NETWORK} --network-alias web \
+                --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} \
+                -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} \
+                -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" \
+                -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web \
+                -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web \
+                ${IMAGE_PHP} php -S web:${HTTP_PORT} -t ${CORE_ROOT}/.Build/Web >/dev/null
+        else
+            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name metrics-web-${SUFFIX} \
+                --network ${NETWORK} --network-alias web \
+                -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} \
+                -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" \
+                -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web \
+                -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web \
+                ${IMAGE_PHP} php -S web:${HTTP_PORT} -t ${CORE_ROOT}/.Build/Web >/dev/null
+        fi
+        
+        waitFor web ${HTTP_PORT}
+        
+        # Test the metrics endpoint
+        echo "Testing metrics endpoint access..."
+        ${CONTAINER_BIN} run --rm ${CONTAINER_COMMON_PARAMS} \
+            --name metrics-test-${SUFFIX} ${IMAGE_ALPINE} \
+            /bin/sh -c "
+                # Test without auth header (should fail)
+                echo 'Testing without auth header (expecting 401)...'
+                echo 'http://web:${HTTP_PORT}${METRICS_ENDPOINT}'
+                RESPONSE=\$(wget -qO- --server-response http://web:${HTTP_PORT}${METRICS_ENDPOINT} 2>&1)
+                if ! echo \"\$RESPONSE\" | grep -q '401'; then
+                    echo 'Error: Expected 401 response for request without auth'
+                    exit 1
+                fi
+                
+                # Test with correct auth header
+                echo 'Testing with correct auth header...'
+                RESPONSE=\$(wget -qO- --header=\"Authorization: ${METRICS_AUTH}\" http://web:${HTTP_PORT}${METRICS_ENDPOINT})
+                if ! echo \"\$RESPONSE\" | grep -q 'typo3_'; then
+                    echo 'Error: Response does not contain TYPO3 metrics'
+                    exit 1
+                fi
+                
+                # Test metric format
+                if ! echo \"\$RESPONSE\" | grep -qE '^typo3_[a-zA-Z_]+{[^}]*} [0-9]+'; then
+                    echo 'Error: Metrics format does not match Prometheus requirements'
+                    exit 1
+                fi
+                
+                echo 'Metrics endpoint tests passed successfully!'
+            "
         SUITE_EXIT_CODE=$?
         ;;
     phpstan)

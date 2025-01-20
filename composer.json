@@ -1,7 +1,7 @@
 {
     "name": "maxfrerichs/t3-prometheus-client",
     "type": "typo3-cms-extension",
-    "description": "TYPO3 client for Prometheus-readable metrics from TYPO3 system status reports",
+    "description": "TYPO3 client for Prometheus",
     "homepage": "https://maxfrerichs.dev",
     "license": [
         "GPL-2.0-or-later"

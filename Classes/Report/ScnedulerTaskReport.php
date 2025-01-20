@@ -1,6 +1,6 @@
 <?php
 
-namespace WapplerSystems\ZabbixClient\Operation;
+namespace MFR\T3PromClient\Report;
 
 /**
  * This file is part of the "zabbix_client" Extension for TYPO3 CMS.
