@@ -1,19 +1,19 @@
 <?php
 
-$EM_CONF['typo3_prometheus'] = [
-    'title' => 'TYPO3 Prometheus',
+$EM_CONF['t3_prometheus_client'] = [
+    'title' => 'Prometheus client for TYPO3',
     'description' => 'Generates Prometheus-readable metrics from TYPO3 system status reports',
     'category' => 'services',
-    'version' => '1.0.0-rc2',
-    'state' => 'stable',
+    'version' => '0.3.0',
+    'state' => 'beta',
     'clearCacheOnLoad' => 0,
     'author' => 'Max Frerichs',
     'author_email' => 'typo3@maxfrerichs.dev',
     'author_company' => 'LfdA - Labor für digitale Angelegenheiten GmbH',
     'constraints' => [
         'depends' => [
-            'typo3' => '11.5.0-13.99.99',
-            'cms-reports' => '11.5.0-13.99.99',
+            'typo3' => '12.4.0-13.4.99',
+            'cms-reports' => '12.4.0-13.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],

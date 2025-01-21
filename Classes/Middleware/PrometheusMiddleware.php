@@ -2,6 +2,7 @@
 
 namespace MFR\T3PromClient\Middleware;
 
+use MFR\T3PromClient\Authentication\AuthenticationFactory;
 use MFR\T3PromClient\Service\PrometheusService;
 use Prometheus\RenderTextFormat;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -14,31 +15,32 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
 class PrometheusMiddleware implements MiddlewareInterface
 {
+    const EXTENSION_KEY = 't3_prometheus_client';
     public function __construct(
         private readonly ResponseFactoryInterface $responseFactory,
         private readonly StreamFactoryInterface $streamFactory,
-        private readonly ExtensionConfiguration $extensionConfiguration,
-        private readonly PrometheusService $prometheusService
-    ) {
-    }
+        private readonly ExtensionConfiguration $config,
+        private readonly PrometheusService $prometheusService,
+        private readonly AuthenticationFactory $authFactory
+    ) {}
 
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $requestPort = $request->getServerParams()['SERVER_PORT'];
-        $metricsPort = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPort') ?? 9090;
-        $metricsPath = $this->extensionConfiguration->get('typo3_prometheus', 'metricsPath');
+        $authentication = $this->authFactory->createAuthenticator(
+            $this->config->get(self::EXTENSION_KEY)['mode']
+        );
 
-        if ($requestPort != $metricsPort) {
-            return $this->responseFactory->createResponse(403);
+        if (!$authentication->authenticate(config: $this->config, request: $request) && $this->config->get(self::EXTENSION_KEY)['debug'] == false) {
+            return $this->responseFactory->createResponse(403, "Authorization failed.");
         }
-        if (($request->getRequestTarget() != $metricsPath)) {
+
+        if (($request->getRequestTarget() != $this->config->get(self::EXTENSION_KEY)['path'])) {
             return $handler->handle($request);
         }
 
-        $result = $this->prometheusService->renderMetrics();
-        echo $result;
+        echo $this->prometheusService->renderMetrics();
         return $this->responseFactory->createResponse(200)->withHeader('Content-Type', RenderTextFormat::MIME_TYPE);
     }
 }

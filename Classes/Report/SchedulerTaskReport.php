@@ -1,6 +1,6 @@
 <?php
 
-namespace WapplerSystems\ZabbixClient\Operation;
+namespace MFR\T3PromClient\Report;
 
 /**
  * This file is part of the "zabbix_client" Extension for TYPO3 CMS.
@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
-class SchedulerTaskStatus implements StatusProviderInterface
+class SchedulerTaskReport implements StatusProviderInterface
 {
     public function getStatus(): array
     {
@@ -42,7 +42,7 @@ class SchedulerTaskStatus implements StatusProviderInterface
             $count >= 1 => $status = new Status(
                 title: 'Scheduler task status',
                 severity: ContextualFeedbackSeverity::ERROR,
-                message: 'No failed Scheduler tasks',
+                message: 'Scheduler tasks failed to run. Please check your configuration',
                 value: (string)$count
             )
         };
