@@ -5,7 +5,7 @@ namespace MFR\T3PromClient\Authentication;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
-class TokenAuthentication implements AuthenticatorInterface
+class TokenAuthentication implements AuthenticationInterface
 {
     public function authenticate(ExtensionConfiguration $config, ServerRequestInterface $request): bool
     {

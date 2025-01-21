@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
-class NoneAuthentication implements AuthenticatorInterface
+class NoneAuthentication implements AuthenticationInterface
 {
     public function authenticate(ExtensionConfiguration $config, ServerRequestInterface $request): bool
     {

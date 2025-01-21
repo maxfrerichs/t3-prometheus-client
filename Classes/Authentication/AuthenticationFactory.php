@@ -6,7 +6,7 @@ use MFR\T3PromClient\Exception\InvalidArgumentException;
 
 class AuthenticationFactory
 {
-    public function createAuthenticator(string $type): AuthenticatorInterface
+    public function createAuthentication(string $type): AuthenticationInterface
     {
         return match ($type) {
             'basic' => new BasicAuthentication(),

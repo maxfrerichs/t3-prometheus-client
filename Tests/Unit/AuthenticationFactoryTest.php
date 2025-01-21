@@ -16,13 +16,16 @@ class AuthenticationFactoryTest extends UnitTestCase
         parent::setUp();
         $this->subject = new AuthenticationFactory();
     }
-    public function testFactory(): void
+    public function testFactoryWithValidParams(): void
     {
-        self::assertInstanceOf(BasicAuthentication::class, $this->subject->createAuthenticator('basic'));
-        self::assertInstanceOf(NoneAuthentication::class, $this->subject->createAuthenticator('none'));
-        self::assertInstanceOf(TokenAuthentication::class, $this->subject->createAuthenticator('token'));
+        self::assertInstanceOf(BasicAuthentication::class, $this->subject->createAuthentication('basic'));
+        self::assertInstanceOf(NoneAuthentication::class, $this->subject->createAuthentication('none'));
+        self::assertInstanceOf(TokenAuthentication::class, $this->subject->createAuthentication('token'));
+    }
 
+    public function testFactoryWithInvalidParams(): void
+    {
         $this->expectException(InvalidArgumentException::class);
-        $this->subject->createAuthenticator('blubb');
+        $this->subject->createAuthentication('blubb');
     }
 }

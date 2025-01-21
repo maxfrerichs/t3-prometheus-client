@@ -28,7 +28,7 @@ class PrometheusMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $authentication = $this->authFactory->createAuthenticator(
+        $authentication = $this->authFactory->createAuthentication(
             $this->config->get(self::EXTENSION_KEY)['mode']
         );
 
