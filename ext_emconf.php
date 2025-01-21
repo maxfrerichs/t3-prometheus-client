@@ -2,9 +2,9 @@
 
 $EM_CONF['t3_prometheus_client'] = [
     'title' => 'Prometheus client for TYPO3',
-    'description' => 'Generates Prometheus-readable metrics from TYPO3 system status reports',
+    'description' => 'Provides a client for Prometheus to scrape timeseries data from system status informations (more info on "How it works") and exposes them on a configuralble endpoint',
     'category' => 'services',
-    'version' => '0.3.0',
+    'version' => '1.0.0-rc1',
     'state' => 'beta',
     'clearCacheOnLoad' => 0,
     'author' => 'Max Frerichs',
