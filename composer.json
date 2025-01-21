@@ -61,5 +61,8 @@
         "post-autoload-dump": [
                 "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
         ]
+    },
+    "archive": {
+        "exclude": ["/Build/", "/Tests/", "/.github/", "CONTRIBUTING.md", "CODE_OF_CONDUCT.md"]
     }
 }
