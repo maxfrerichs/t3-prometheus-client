@@ -2,7 +2,7 @@
     "name": "maxfrerichs/t3-prometheus-client",
     "type": "typo3-cms-extension",
     "description": "TYPO3 client for Prometheus",
-    "version": "1.0.0-rc1",
+    "version": "0.9.0",
     "license": [
         "GPL-2.0-or-later"
     ],
