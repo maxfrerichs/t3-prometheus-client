@@ -16,6 +16,8 @@ jobs:
         run: ./Build/Scripts/runTests.sh -t 13 -p 8.4 -s composer install
       - name: Run phpstan
         run: ./Build/Scripts/runTests.sh -t 13 -p 8.4 -s phpstan
+      - name: Run unit tests
+        run: ./Build/Scripts/runTests.sh -t 13 -p 8.4 -s unit
 
   run_tests_for_v12:
     name: Run Tests for TYPO3 12.4
@@ -27,3 +29,5 @@ jobs:
         run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s composer install  
       - name: Run phpstan
         run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s phpstan
+      - name: Run unit tests
+        run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s unit

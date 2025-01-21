@@ -1,4 +1,14 @@
-# cat=General; type=int; label=Port for accessing timeseries data (default 9090)
+# cat=General; type=int; label=Port for Prometheus (default 9090)
 port = 9090
-# cat=General; type=string; label=Set path for timeseries
+# cat=General; type=string; label=URL path for Prometheus
 path = /metrics
+# cat=General; type=boolean; label=Debug mode
+debug = false
+# cat=Authentication; type=options[None=none,Basic authentication=basic,Token-based authentication=token]; label=Authentication mode
+mode = token
+# cat=Authentication; type=string; label=Authentication token. Only takes effect, when "Token-based authentication" is selected
+token =
+# cat=Authentication; type=string; label=User name. Only takes effect, when "Basic authentication" is selected
+basicAuth.username = 
+# cat=Authentication; type=string; label=Password. Only takes effect, when "Basic authentication" is selected
+basicAuth.password =
