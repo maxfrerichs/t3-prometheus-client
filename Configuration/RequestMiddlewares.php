@@ -6,7 +6,6 @@ return [
             'target' =>
                 \MFR\T3PromClient\Middleware\PrometheusMiddleware::class,
             'before' => [
-                'typo3/cms-core/verify-host-header',
                 'typo3/cms-frontend/site',
                 'typo3/cms-frontend/timetracker',
             ],

@@ -19,6 +19,7 @@ This extension provides a client for Prometheus to scrape timeseries data from s
 * Install and configure prometheus. Please refer to the [Prometheus documentation](https://prometheus.io/docs/introduction/overview/) for more information regarding this topic.
 * Configure the extension. The recommended way to work with Prometheus is to expose the app on a separate, non-public port and deploy Prometheus on the same webserver. 
   However, you can configure this extension to provide Basic authentication or Token-based authentication, so you can expose the metrics endpoint to the public, if needed.
+* Configure your host. If you want to run Prometheus on the same server, you need to create a VirtualHost config for the non-public port. An example for this config can be found in Examples/config/other-vhosts.example.config
 
 
 # Known issues
