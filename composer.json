@@ -3,6 +3,7 @@
     "type": "typo3-cms-extension",
     "description": "TYPO3 client for Prometheus",
     "homepage": "https://maxfrerichs.dev",
+    "version": "0.3.0",
     "license": [
         "GPL-2.0-or-later"
     ],
@@ -27,7 +28,8 @@
         "typo3/testing-framework": "^8.0",
         "typo3/coding-standards": "^0.5.5",
         "phpunit/phpunit": "^10.0",
-        "friendsofphp/php-cs-fixer": "^3.51"
+        "friendsofphp/php-cs-fixer": "^3.51",
+        "typo3/tailor": "^1.6"
     },
     "config": {
         "allow-plugins": {
