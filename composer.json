@@ -2,7 +2,6 @@
     "name": "maxfrerichs/t3-prometheus-client",
     "type": "typo3-cms-extension",
     "description": "TYPO3 client for Prometheus",
-    "homepage": "https://maxfrerichs.dev",
     "version": "0.3.0-beta",
     "license": [
         "GPL-2.0-or-later"
@@ -10,12 +9,12 @@
     "authors": [
         {
             "name": "Max Frerichs",
-            "email": "typo3@maxfrerichs.dev",
+            "email": "maxfrerichs@gmx.de",
             "role": "Developer"
         }
     ],
     "support": {
-        "email": "typo3@maxfrerichs.dev"
+        "email": "maxfrerichs@gmx.de"
     },
     "require": {
         "php": ">=8.2",

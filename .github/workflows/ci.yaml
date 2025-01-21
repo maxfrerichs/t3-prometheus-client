@@ -31,3 +31,38 @@ jobs:
         run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s phpstan
       - name: Run unit tests
         run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s unit
+
+  publish_to_ter:
+    runs-on: ubuntu-latest
+    name: Publish Extension to TER
+    needs: [run_tests_for_v13,run_tests_for_v12]
+    if: startsWith(github.ref, 'refs/tags/')
+    env:
+      TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+    steps:
+      -
+        name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      -
+        name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: intl, mbstring, json, zip, curl
+          tools: composer:v2
+      -
+        name: Install typo3/tailor
+        run: composer global require typo3/tailor --prefer-dist --no-progress
+      -
+        name: Publish EXT:t3_prometheus_client to TER
+        run: |
+          export RELEASE_VERSION=${GITHUB_REF/refs\/tags\//}
+          export TER_COMMENT=$(git tag -n99 -l "$RELEASE_VERSION" | sed "s/^[0-9.]*[ ]*//g")
+          if [[ -z "${TER_COMMENT// }" ]]; then
+            export TER_COMMENT="Released version $RELEASE_VERSION of EXT:solr"
+          fi
+          echo "Following message will be printed in TER as release description:"
+          echo -e "$TER_COMMENT"
+          php ~/.composer/vendor/bin/tailor ter:publish --comment "$TER_COMMENT" "$RELEASE_VERSION"
