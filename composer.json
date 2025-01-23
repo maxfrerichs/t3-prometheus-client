@@ -53,7 +53,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-                "Stan\\StanDocuments\\Tests\\": "Tests"
+                "MFR\\T3PromClient\\Tests\\": "Tests"
         }
     },
     "scripts": {
