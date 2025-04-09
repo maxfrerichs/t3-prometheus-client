@@ -1,0 +1,6 @@
+[RELEASE] Release of t3-prometheus-client 0.10.0
+[!!!][TASK] Remove typo3/cms-reports dependency
+[FEATURE] Add push-gateway support
+[TASK] Introduce custom metrics that reflect Prometheus's data model
+[FEATURE] Add Metrics registry, allowing for contract-based registration of metrics
+[TASK] Add documentation
