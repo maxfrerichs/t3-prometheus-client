@@ -16,3 +16,9 @@ services:
   MFR\T3PromClient\Registry\MetricRegistry:
     arguments:
       - !tagged_iterator prometheus.metric
+
+  MFR\T3PromClient\Command\PushToGatewayCommand:
+    tags:
+      - name: console.command
+        command: 'examples:dosomething'
+        description: 'A command that does nothing and always succeeds.'

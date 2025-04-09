@@ -28,7 +28,7 @@ final class PushToGatewayCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->eventDispatcher->dispatch(new BeforePrometheusMetricsPushedEvent($this));
+        $this->eventDispatcher->dispatch(new BeforePrometheusMetricsPushedEvent());
         if (!$this->promService->renderMetrics(RetrieveMode::PUSH, $this->config)) {
             return Command::FAILURE;
         }
