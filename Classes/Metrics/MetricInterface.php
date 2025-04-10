@@ -8,13 +8,10 @@ interface MetricInterface
 {
     public const DEFAULT_NAMESPACE = 't3promclient';
     public function getName(): string;
-
     public function getNamespace(): string;
-
     public function getType(): MetricType;
     public function getMode(): RetrieveMode;
-
+    public function getHelp(): string;
     public function getLabels(): array;
-    public function getHelp();
-    public function getValue();
+    public function getValue(): int|float;
 }

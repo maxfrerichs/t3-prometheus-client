@@ -8,21 +8,19 @@ use MFR\T3PromClient\Metrics\MetricInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Service\CoreVersionService;
 use MFR\T3PromClient\Exception\RemoteFetchException;
-class AvailableUpdatesMetric implements MetricInterface
+final class AvailableUpdatesMetric implements MetricInterface
 {
     private MetricType $type = MetricType::GAUGE;
 
     private RetrieveMode $mode = RetrieveMode::SCRAPE;
-    
+
     private string $name = "available_updates";
-    
-    private array $labels = [""];
-    
-    private string $help = "";
-    /**
-     * @inheritDoc
-     */
-    public function getValue() 
+
+    private array $labels = ["typo3", "security", "updates"];
+
+    private string $help = "Number of available updates for this instance";
+
+    public function getValue(): int|float
     {
         $coreVersionService = GeneralUtility::makeInstance(CoreVersionService::class);
 
@@ -73,40 +71,32 @@ class AvailableUpdatesMetric implements MetricInterface
         return $availableUpdates;
     }
 
-    
-    public function getName(): string 
+    public function getName(): string
     {
         return $this->name;
     }
-    
-    public function getNamespace(): string 
+
+    public function getNamespace(): string
     {
         return self::DEFAULT_NAMESPACE;
     }
-    
-    public function getType(): MetricType 
+
+    public function getType(): MetricType
     {
         return MetricType::GAUGE;
     }
-    /**
-     * @inheritDoc
-     */
-    public function getHelp() 
+
+    public function getHelp(): string
     {
-        return "";
+        return $this->help;
     }
-    
-    /**
-     * @inheritDoc
-     */
-    public function getLabels(): array 
+
+    public function getLabels(): array
     {
-        return [];
+        return $this->labels;
     }
-    /**
-     * @inheritDoc
-     */
-    public function getMode(): RetrieveMode 
+
+    public function getMode(): RetrieveMode
     {
         return $this->mode;
     }
