@@ -36,7 +36,7 @@ considering this compatibility matrix:
   t3-prometheus-client     TYPO3        PHP         Support / Development
 ======================= =========== =========== ======================================
   1.x                     12 - 13     8.2 - 8.4   active support
-  0.x                     12 - 13     8.2 - 8.4   active support
+  0.x                     12 - 13     8.2 - 8.4   no support
 ======================= =========== =========== ======================================
 
 Versioning

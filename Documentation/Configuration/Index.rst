@@ -3,7 +3,7 @@
 Configuration
 =============
 
-This extension provides several configuration options that can be set in the Extension Configuration section of the TYPO3 Settings.
+The extension provides several configuration options that can be set in the Extension Configuration section of the TYPO3 Settings.
 
 .. note::
 

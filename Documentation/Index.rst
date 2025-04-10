@@ -53,7 +53,7 @@ t3_prometheus_client.
     Installation/Index
     Configuration/Index
     API/Index
-    KnownProblems/Index
+    Examples/Index
 
 ..  Meta Menu
 
@@ -86,6 +86,3 @@ t3_prometheus_client.
 
 :Rendered:
     |today|
-
-
-
