@@ -20,5 +20,5 @@ services:
   MFR\T3PromClient\Command\PushToGatewayCommand:
     tags:
       - name: console.command
-        command: 'examples:dosomething'
-        description: 'A command that does nothing and always succeeds.'
+        command: 'prometheus:push'
+        description: 'Push metrics to Prometheus gateway.'

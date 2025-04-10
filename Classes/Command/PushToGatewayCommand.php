@@ -19,7 +19,9 @@ final class PushToGatewayCommand extends Command
         private readonly PrometheusService $promService,
         private readonly ExtensionConfiguration $config,
         private readonly EventDispatcherInterface $eventDispatcher
-    ){}
+    ){
+        parent::__construct();
+    }
 
     protected function configure(): void
     {
