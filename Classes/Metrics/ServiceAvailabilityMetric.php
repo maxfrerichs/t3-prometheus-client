@@ -3,6 +3,7 @@ namespace MFR\T3PromClient\Metrics;
 
 use MFR\T3PromClient\Enum\MetricType;
 use MFR\T3PromClient\Enum\RetrieveMode;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -16,7 +17,7 @@ final class ServiceAvailabilityMetric implements MetricInterface
 
     protected RetrieveMode $mode = RetrieveMode::SCRAPE;
 
-    protected array $labels = ["typo3", "availability", "exception"];
+    protected array $labels = [];
 
     protected string $help = "Number of logged ServiceUnavailableExceptions for this instance";
 
@@ -47,9 +48,11 @@ final class ServiceAvailabilityMetric implements MetricInterface
 
     public function getLabels(): array
     {
+        $this->labels = [
+            'context' => Environment::getContext()->__toString()
+        ];
         return $this->labels;
     }
-
     public function getValue(): int
     {
         

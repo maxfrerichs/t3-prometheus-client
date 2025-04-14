@@ -5,6 +5,7 @@ namespace MFR\T3PromClient\Metrics;
 use MFR\T3PromClient\Enum\MetricType;
 use MFR\T3PromClient\Enum\RetrieveMode;
 use MFR\T3PromClient\Metrics\MetricInterface;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use MFR\T3PromClient\Service\CoreVersionService;
 use MFR\T3PromClient\Exception\RemoteFetchException;
@@ -18,7 +19,7 @@ final class AvailableUpdatesMetric implements MetricInterface
 
     protected RetrieveMode $mode = RetrieveMode::SCRAPE;
 
-    protected array $labels = ["typo3", "security", "updates"];
+    protected array $labels = [];
 
     protected string $help = "Number of available updates for this instance";
 
@@ -46,9 +47,12 @@ final class AvailableUpdatesMetric implements MetricInterface
     {
         return $this->help;
     }
-
+    
     public function getLabels(): array
     {
+        $this->labels = [
+            'context' => Environment::getContext()->__toString()
+        ];
         return $this->labels;
     }
 
