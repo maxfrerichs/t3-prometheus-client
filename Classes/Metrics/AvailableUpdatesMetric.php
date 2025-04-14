@@ -6,7 +6,7 @@ use MFR\T3PromClient\Enum\MetricType;
 use MFR\T3PromClient\Enum\RetrieveMode;
 use MFR\T3PromClient\Metrics\MetricInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Install\Service\CoreVersionService;
+use MFR\T3PromClient\Service\CoreVersionService;
 use MFR\T3PromClient\Exception\RemoteFetchException;
 final class AvailableUpdatesMetric implements MetricInterface
 {
@@ -41,7 +41,7 @@ final class AvailableUpdatesMetric implements MetricInterface
     {
         return $this->mode;
     }
-    
+
     public function getHelp(): string
     {
         return $this->help;

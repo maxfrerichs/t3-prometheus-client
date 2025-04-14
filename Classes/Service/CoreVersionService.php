@@ -104,7 +104,7 @@ class CoreVersionService
      * Returns TRUE if an upgrade from current version is security relevant
      *
      * @return bool TRUE if there is a pending security update
-     * @throws \TYPO3\CMS\Install\Service\Exception\RemoteFetchException
+     * @throws RemoteFetchException
      */
     public function isUpdateSecurityRelevant(CoreRelease $releaseToCheck): bool
     {
