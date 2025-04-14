@@ -10,15 +10,47 @@ use TYPO3\CMS\Install\Service\CoreVersionService;
 use MFR\T3PromClient\Exception\RemoteFetchException;
 final class AvailableUpdatesMetric implements MetricInterface
 {
-    private MetricType $type = MetricType::GAUGE;
+    protected string $name = "available_updates";
 
-    private RetrieveMode $mode = RetrieveMode::SCRAPE;
+    protected string $namespace = self::DEFAULT_NAMESPACE;
 
-    private string $name = "available_updates";
+    protected MetricType $type = MetricType::GAUGE;
 
-    private array $labels = ["typo3", "security", "updates"];
+    protected RetrieveMode $mode = RetrieveMode::SCRAPE;
 
-    private string $help = "Number of available updates for this instance";
+    protected array $labels = ["typo3", "security", "updates"];
+
+    protected string $help = "Number of available updates for this instance";
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+
+    public function getType(): MetricType
+    {
+        return $this->type;
+    }
+
+    public function getMode(): RetrieveMode
+    {
+        return $this->mode;
+    }
+    
+    public function getHelp(): string
+    {
+        return $this->help;
+    }
+
+    public function getLabels(): array
+    {
+        return $this->labels;
+    }
 
     public function getValue(): int|float
     {
@@ -39,6 +71,8 @@ final class AvailableUpdatesMetric implements MetricInterface
         }
 
         $availableReleases = [];
+        $availableUpdates = 0;
+
         $latestRelease = $coreVersionService->getYoungestPatchRelease();
         $isCurrentVersionElts = $coreVersionService->isCurrentInstalledVersionElts();
 
@@ -52,52 +86,17 @@ final class AvailableUpdatesMetric implements MetricInterface
                 $availableReleases[] = $latestCommunityDrivenRelease;
             }
         }
+
         if ($availableReleases === []) {
-            return 0;
+            return $availableUpdates;
         }
 
-        $availableUpdates = 0;
         foreach ($availableReleases as $availableRelease) {
             if (($availableRelease->isElts() && $isCurrentVersionElts) || (!$availableRelease->isElts() && !$isCurrentVersionElts) ) {
-                try {
-                    if ($coreVersionService->isUpdateSecurityRelevant($availableRelease)) {
-                        $availableUpdates++;
-                    }
-                } catch (RemoteFetchException $e) {
-                    return 1;
-                }
+                $availableUpdates++;
             }
         }
         return $availableUpdates;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getNamespace(): string
-    {
-        return self::DEFAULT_NAMESPACE;
-    }
-
-    public function getType(): MetricType
-    {
-        return MetricType::GAUGE;
-    }
-
-    public function getHelp(): string
-    {
-        return $this->help;
-    }
-
-    public function getLabels(): array
-    {
-        return $this->labels;
-    }
-
-    public function getMode(): RetrieveMode
-    {
-        return $this->mode;
-    }
 }

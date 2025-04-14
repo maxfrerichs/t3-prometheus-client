@@ -4,7 +4,6 @@ namespace MFR\T3PromClient\Metrics;
 
 use MFR\T3PromClient\Enum\MetricType;
 use MFR\T3PromClient\Enum\RetrieveMode;
-use MFR\T3PromClient\Metrics\MetricInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -12,16 +11,17 @@ use TYPO3\CMS\Core\Database\Connection;
 
 final class SchedulerTaskMetric implements MetricInterface
 {
-    private MetricType $type = MetricType::GAUGE;
+    protected string $name = "failed_scheduler_tasks";
 
-    private RetrieveMode $mode = RetrieveMode::SCRAPE;
+    protected string $namespace = self::DEFAULT_NAMESPACE;
 
-    private string $name = "failed_scheduler_tasks";
+    protected MetricType $type = MetricType::GAUGE;
 
-    private array $labels = ["scheduler", "typo3"];
+    protected RetrieveMode $mode = RetrieveMode::SCRAPE;
 
-    private string $help = "Number of failed scheduler tasks";
+    protected array $labels = ["scheduler", "typo3"];
 
+    protected string $help = "Number of failed scheduler tasks";
 
     public function getName(): string
     {
@@ -30,12 +30,12 @@ final class SchedulerTaskMetric implements MetricInterface
 
     public function getNamespace(): string
     {
-        return self::DEFAULT_NAMESPACE;
+        return $this->namespace;
     }
 
     public function getType(): MetricType
     {
-        return MetricType::GAUGE;
+        return $this->type;
     }
 
     public function getMode(): RetrieveMode

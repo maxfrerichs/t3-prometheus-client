@@ -7,7 +7,6 @@ use MFR\T3PromClient\Enum\RetrieveMode;
 use MFR\T3PromClient\Event\BeforePrometheusMetricsScrapedEvent;
 use MFR\T3PromClient\Service\PrometheusService;
 use Prometheus\RenderTextFormat;
-use PrometheusMetricsRequestedEvent;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -44,7 +43,7 @@ class PrometheusMiddleware implements MiddlewareInterface
         if (($request->getRequestTarget() != $this->config->get(self::EXT_KEY)['path'])) {
             return $handler->handle($request);
         }
-        
+
         $this->eventDispatcher->dispatch(new BeforePrometheusMetricsScrapedEvent());
         echo $this->promService->renderMetrics(RetrieveMode::SCRAPE, $this->config);
         return $this->responseFactory->createResponse(200)->withHeader('Content-Type', RenderTextFormat::MIME_TYPE);
