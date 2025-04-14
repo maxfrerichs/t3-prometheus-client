@@ -6,6 +6,8 @@ path = /metrics
 debug = false
 # cat=Authentication; type=options[None=none,Basic authentication=basic,Token-based authentication=token]; label=Authentication mode
 mode = token
+# cat=General; type=string; label=Pushgateway location
+gateway =
 # cat=Authentication; type=string; label=Authentication token. Only takes effect, when "Token-based authentication" is selected
 token =
 # cat=Authentication; type=string; label=User name. Only takes effect, when "Basic authentication" is selected
