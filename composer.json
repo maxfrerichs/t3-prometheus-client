@@ -2,7 +2,7 @@
     "name": "maxfrerichs/t3-prometheus-client",
     "type": "typo3-cms-extension",
     "description": "TYPO3 client for Prometheus",
-    "version": "0.10.0",
+    "version": "1.0.0",
     "license": [
         "GPL-2.0-or-later"
     ],
@@ -19,6 +19,7 @@
     "require": {
         "php": ">=8.2",
         "typo3/cms-core": "^12.4 || ^13.4",
+        "typo3/cms-scheduler": "^12.4 || ^13.4",
         "promphp/prometheus_client_php": "^2.14",
         "promphp/prometheus_push_gateway_php": "^1.1"
     },
@@ -53,7 +54,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-                "Stan\\StanDocuments\\Tests\\": "Tests"
+                "MFR\\T3PromClient\\Tests\\": "Tests"
         }
     },
     "scripts": {
