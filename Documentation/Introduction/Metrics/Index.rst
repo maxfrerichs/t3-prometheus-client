@@ -3,10 +3,11 @@
 Available metrics[WIP]
 =================
 
-The extension provides a set of metrics that can be used to monitor TYPO3 installations. The following metrics are available by default:
+The extension ships a default set of metrics that can be used to monitor TYPO3 installations. The following metrics are available by default:
 
 * Available Updates
-* Reference Index integrity
-* Failed Scheduler Task
+* Failed logins
+* ServiceUnavailableException counts
+* Failed Scheduler task runs
 
-More metrics are added in the future.
+More metrics are planned to  added in the future.

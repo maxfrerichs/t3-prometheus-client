@@ -12,6 +12,7 @@ System requirements
 
 * t3_prometheus_client 0.9+ requires TYPO3 12 or 13.
 * Prometheus (refer to https://prometheus.io for more information about Prometheus itself)
+* Optional: Pushgateway
 * Optional: Grafana for data visualization
 
 

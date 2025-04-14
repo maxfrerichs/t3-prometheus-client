@@ -53,7 +53,6 @@ t3_prometheus_client.
     Installation/Index
     Configuration/Index
     API/Index
-    Examples/Index
 
 ..  Meta Menu
 
