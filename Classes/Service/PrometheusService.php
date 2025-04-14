@@ -65,8 +65,8 @@ class PrometheusService
             $metric->getNamespace(),
             $metric->getName(), 
             $metric->getHelp(), 
-            $metric->getLabels()
-        )->set($metric->getValue(), $metric->getLabels());
+            array_keys($metric->getLabels())
+        )->set($metric->getValue(), array_values($metric->getLabels()));
     }
 
     protected function renderCounter(CollectorRegistry &$collectorRegistry, MetricInterface $metric): void
@@ -75,8 +75,8 @@ class PrometheusService
             $metric->getNamespace(), 
             $metric->getName(), 
             $metric->getHelp(), 
-            $metric->getLabels()
-        )->incBy($metric->getValue(), $metric->getLabels());
+            array_keys($metric->getLabels())
+        )->incBy($metric->getValue(), array_values($metric->getLabels()));
     }
 
 
@@ -86,8 +86,8 @@ class PrometheusService
             $metric->getNamespace(), 
             $metric->getName(), 
             $metric->getHelp(), 
-            $metric->getLabels()
-        )->observe($metric->getValue(), $metric->getLabels());
+            array_keys($metric->getLabels())
+        )->observe($metric->getValue(), array_values($metric->getLabels()));
     }
 
     protected function renderSummary(CollectorRegistry &$collectorRegistry, MetricInterface $metric): void
@@ -96,7 +96,7 @@ class PrometheusService
             $metric->getNamespace(), 
             $metric->getName(), 
             $metric->getHelp(), 
-            $metric->getLabels()
-        )->observe($metric->getValue(), $metric->getLabels());
+            array_keys($metric->getLabels())
+        )->observe($metric->getValue(), array_values($metric->getLabels()));
     }
 }
