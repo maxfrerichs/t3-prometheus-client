@@ -4,7 +4,6 @@ namespace MFR\T3PromClient\Middleware;
 
 use MFR\T3PromClient\Authentication\AuthenticationFactory;
 use MFR\T3PromClient\Enum\RetrieveMode;
-use MFR\T3PromClient\Event\BeforePrometheusMetricsScrapedEvent;
 use MFR\T3PromClient\Service\PrometheusService;
 use Prometheus\RenderTextFormat;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -44,7 +43,6 @@ class PrometheusMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $this->eventDispatcher->dispatch(new BeforePrometheusMetricsScrapedEvent());
         echo $this->promService->renderMetrics(RetrieveMode::SCRAPE, $this->config);
         return $this->responseFactory->createResponse(200)->withHeader('Content-Type', RenderTextFormat::MIME_TYPE);
     }

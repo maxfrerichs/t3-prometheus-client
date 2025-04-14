@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MFR\T3PromClient\Command;
 
 use MFR\T3PromClient\Enum\RetrieveMode;
-use MFR\T3PromClient\Event\BeforePrometheusMetricsPushedEvent;
 use MFR\T3PromClient\Service\PrometheusService;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Console\Command\Command;
@@ -30,7 +29,6 @@ final class PushToGatewayCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->eventDispatcher->dispatch(new BeforePrometheusMetricsPushedEvent());
         if (!$this->promService->renderMetrics(RetrieveMode::PUSH, $this->config)) {
             return Command::FAILURE;
         }
