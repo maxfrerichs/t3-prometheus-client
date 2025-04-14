@@ -1,4 +1,7 @@
 [RELEASE] Release of t3-prometheus-client 0.10.0
+[!!!][BUGFIX] add missing pushgateway option to ext_conf_template.txt
+
+[RELEASE] Release of t3-prometheus-client 0.10.0
 [!!!][TASK] Remove typo3/cms-reports dependency
 [BUGFIX] Remove broken SchedulerTaskReport status report
 [FEATURE] Add push-gateway support
