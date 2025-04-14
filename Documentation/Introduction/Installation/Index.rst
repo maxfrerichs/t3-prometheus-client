@@ -1,4 +1,4 @@
-.. _introduction:
+.. _installation:
 
 Installation
 ============
@@ -22,7 +22,7 @@ extension by one of the following methods:
    by downloading the zip version. Upload the file afterwards in the Extension
    Manager.
 
-and :ref:`configure <extensionConfiguration>` it.
+and :ref:`configure <configuration>` it.
 
 .. _TER: https://extensions.typo3.org/extension/t3_prometheus_client/
 
@@ -46,13 +46,3 @@ Versioning
 
    While in 0.x, breaking changes are to be expected. API stability cannot be guaranteed. Be careful for running in production. 
 
-This project uses `semantic versioning <https://semver.org/>`_, which means that
-
-*  **bugfix updates** (e.g. 1.0.0 => 1.0.1) just include small bugfixes or
-   security relevant stuff without breaking changes,
-*  **minor updates** (e.g. 1.0.0 => 1.1.0) include new features and smaller
-   tasks without breaking changes and
-*  **major updates** (e.g. 1.0.0 => 2.0.0) contain breaking changes which can be
-   refactorings, features or bugfixes.
-
-as can be seen by reading the project's :ref:`change log <changelog>`.
