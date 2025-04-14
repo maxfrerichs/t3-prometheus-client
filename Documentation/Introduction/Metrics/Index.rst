@@ -10,4 +10,4 @@ The extension ships a default set of metrics that can be used to monitor TYPO3 i
 * ServiceUnavailableException counts
 * Failed Scheduler task runs
 
-More metrics are planned to  added in the future.
+More metrics are planned to be added in the future.

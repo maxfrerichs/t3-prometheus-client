@@ -2,4 +2,5 @@
 
 Setting up Prometheus
 =====================
-[WIP]
+
+Please refer to https://prometheus.io/docs/introduction/overview/ for information on how to deploy Prometheus.

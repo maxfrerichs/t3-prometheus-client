@@ -6,7 +6,7 @@ Both scraping and pushing to a gateway are supported.
 
 ## Requirements
 * TYPO3 12.4 or higher
-* PHP 8.0 or higher
+* PHP 8.2 or higher
 * [Prometheus](https://prometheus.io/)
 
 ## How to use:
@@ -23,7 +23,7 @@ Both scraping and pushing to a gateway are supported.
 (Your issue?)
 
 ## API
-Registration of custom metrics is possible by creating a class that implements MFR\T3PromClient\Metrics\MetricInterface
+Registration of custom metrics is possible by creating a class that implements MFR\T3PromClient\Metrics\MetricInterface or by registering the service with the prometheus.metric tag in Configuration/Services.yaml
 
 ## TODO:
 * Add support for other metric types [WIP].

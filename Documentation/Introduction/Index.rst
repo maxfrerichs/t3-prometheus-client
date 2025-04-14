@@ -22,7 +22,7 @@ Source code
 
 The source code is managed at
 
-https://github.com/maxfrerichs
+https://github.com/maxfrerichs/t3-prometheus-client
 
 
 More pages
@@ -32,5 +32,6 @@ More pages
    :titlesonly:
 
    Installation/Index
+   Server/Index
    Metrics/Index
    Prometheus/Index
