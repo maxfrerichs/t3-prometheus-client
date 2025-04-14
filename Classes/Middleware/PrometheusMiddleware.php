@@ -12,7 +12,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
 class PrometheusMiddleware implements MiddlewareInterface
@@ -24,7 +23,6 @@ class PrometheusMiddleware implements MiddlewareInterface
         private readonly ExtensionConfiguration $config,
         private readonly PrometheusService $promService,
         private readonly AuthenticationFactory $authFactory,
-        private readonly EventDispatcherInterface $eventDispatcher
     ) {}
 
     public function process(

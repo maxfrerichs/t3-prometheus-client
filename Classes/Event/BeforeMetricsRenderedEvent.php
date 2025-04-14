@@ -29,9 +29,6 @@ final class BeforeMetricsRenderedEvent
         return $this->metrics;
     }
 
-    /**
-     * @param iterable<MetricInterface> $metrics
-     */
     public function setMetrics(array $metrics)
     {
         $this->metrics = $metrics;

@@ -11,3 +11,9 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: ../Classes/Middleware/PrometheusMiddleware.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: mixed$#'
+			identifier: match.unhandled
+			count: 1
+			path: ../Classes/Service/PrometheusService.php

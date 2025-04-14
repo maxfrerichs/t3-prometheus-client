@@ -6,7 +6,6 @@ namespace MFR\T3PromClient\Command;
 
 use MFR\T3PromClient\Enum\RetrieveMode;
 use MFR\T3PromClient\Service\PrometheusService;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +16,6 @@ final class PushToGatewayCommand extends Command
     public function __construct(
         private readonly PrometheusService $promService,
         private readonly ExtensionConfiguration $config,
-        private readonly EventDispatcherInterface $eventDispatcher
     ){
         parent::__construct();
     }
