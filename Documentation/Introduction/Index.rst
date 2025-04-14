@@ -15,8 +15,6 @@ System requirements
 * Optional: Pushgateway
 * Optional: Grafana for data visualization
 
-
-
 Source code
 ===========
 

@@ -1,5 +1,3 @@
-..  include:: /Includes.rst.txt
-
 .. _start:
 
 =========
@@ -50,16 +48,11 @@ t3_prometheus_client.
     :titlesonly:
 
     Introduction/Index
-    Installation/Index
     Configuration/Index
     API/Index
 
 ..  Meta Menu
 
-..  toctree::
-    :hidden:
-
-    Sitemap
 
 ----
 
@@ -70,7 +63,7 @@ t3_prometheus_client.
     maxfrerichs/t3-prometheus-client
 
 :Version:
-    1.0.0
+    0.10.0
 
 :Language:
     en
