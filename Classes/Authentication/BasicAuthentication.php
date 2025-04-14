@@ -9,11 +9,11 @@ class BasicAuthentication implements AuthenticationInterface
 {
     public function authenticate(ExtensionConfiguration $config, ServerRequestInterface $request): bool
     {
-        $username = $config->get(self::EXTENSION_KEY)['basicAuth']['username'];
-        $password = $config->get(self::EXTENSION_KEY)['basicAuth']['password'];
+        $username = $config->get(self::EXT_KEY)['basicAuth']['username'];
+        $password = $config->get(self::EXT_KEY)['basicAuth']['password'];
 
         if ($this->encodeCredentials($username, $password) === $request->getHeaderLine('Authorization') 
-            && $config->get(self::EXTENSION_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) 
+            && $config->get(self::EXT_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) 
         {
             return true;
         }

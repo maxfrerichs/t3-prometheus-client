@@ -13,13 +13,12 @@ services:
       $responseFactory: '@Psr\Http\Message\ResponseFactoryInterface'
       $streamFactory: '@Psr\Http\Message\StreamFactoryInterface'
 
-  TYPO3\CMS\Install\Report\EnvironmentStatusReport:
-    public: true
-  
-  TYPO3\CMS\Install\Report\InstallStatusReport:
-    public: true
-
-  MFR\T3PromClient\Service\PrometheusService:
+  MFR\T3PromClient\Registry\MetricRegistry:
     arguments:
-      $environmentStatusReport: '@TYPO3\CMS\Install\Report\EnvironmentStatusReport'
-      $installStatusReport: '@TYPO3\CMS\Install\Report\InstallStatusReport'
+      - !tagged_iterator prometheus.metric
+
+  MFR\T3PromClient\Command\PushToGatewayCommand:
+    tags:
+      - name: console.command
+        command: 'prometheus:push'
+        description: 'Push metrics to Prometheus gateway.'

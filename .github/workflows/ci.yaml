@@ -65,7 +65,7 @@ jobs:
           export RELEASE_VERSION=${GITHUB_REF/refs\/tags\//}
           export TER_COMMENT=$(git tag -n99 -l "$RELEASE_VERSION" | sed "s/^[0-9.]*[ ]*//g")
           if [[ -z "${TER_COMMENT// }" ]]; then
-            export TER_COMMENT="Released version $RELEASE_VERSION of EXT:solr"
+            export TER_COMMENT="Released version $RELEASE_VERSION of EXT:t3_prometheus_client"
           fi
           echo "Following message will be printed in TER as release description:"
           echo -e "$TER_COMMENT"

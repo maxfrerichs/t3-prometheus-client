@@ -132,6 +132,8 @@ Options:
             - composerValidate: "composer validate"
             - lint: PHP linting
             - phpstan: phpstan tests
+            - docsGenerate: Renders the extension ReST documentation.
+            - serveDocs: Spin up local server for writing ReST documentation.
             - phpstanGenerateBaseline: regenerate phpstan baseline, handy after phpstan updates
             - unit (default): PHP unit tests
 
@@ -577,9 +579,9 @@ case ${TEST_SUITE} in
                 -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web \
                 ${IMAGE_PHP} php -S web:${HTTP_PORT} -t ${CORE_ROOT}/.Build/Web >/dev/null
         fi
-        
+
         waitFor web ${HTTP_PORT}
-        
+
         # Test the metrics endpoint
         echo "Testing metrics endpoint access..."
         ${CONTAINER_BIN} run --rm ${CONTAINER_COMMON_PARAMS} \
@@ -593,7 +595,7 @@ case ${TEST_SUITE} in
                     echo 'Error: Expected 401 response for request without auth'
                     exit 1
                 fi
-                
+
                 # Test with correct auth header
                 echo 'Testing with correct auth header...'
                 RESPONSE=\$(wget -qO- --header=\"Authorization: ${METRICS_AUTH}\" http://web:${HTTP_PORT}${METRICS_ENDPOINT})
@@ -601,13 +603,13 @@ case ${TEST_SUITE} in
                     echo 'Error: Response does not contain TYPO3 metrics'
                     exit 1
                 fi
-                
+
                 # Test metric format
                 if ! echo \"\$RESPONSE\" | grep -qE '^typo3_[a-zA-Z_]+{[^}]*} [0-9]+'; then
                     echo 'Error: Metrics format does not match Prometheus requirements'
                     exit 1
                 fi
-                
+
                 echo 'Metrics endpoint tests passed successfully!'
             "
         SUITE_EXIT_CODE=$?
@@ -624,6 +626,16 @@ case ${TEST_SUITE} in
         ;;
     unit)
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name unit-${SUFFIX} ${XDEBUG_MODE} -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" ${IMAGE_PHP} .Build/bin/phpunit -c Build/phpunit/UnitTests.xml "$@"
+        SUITE_EXIT_CODE=$?
+        ;;
+    serveDocs)
+        docker run --rm -it --pull always   -v "./Documentation:/project/Documentation"   -v "./Documentation-GENERATED-temp:/project/Documentation-GENERATED-temp"   -p 5173:5173 ghcr.io/garvinhicking/typo3-documentation-browsersync:latest
+    ;;
+    docsGenerate)
+        mkdir -p Documentation-GENERATED-temp
+        chown -R ${HOST_UID}:${HOST_PID} Documentation-GENERATED-temp
+        COMMAND=(--config=Documentation --fail-on-log ${EXTRA_TEST_OPTIONS} "$@")
+        ${CONTAINER_BIN} run ${CONTAINER_INTERACTIVE} --rm --pull always ${USERSET} -v "${ROOT_DIR}":/project ${IMAGE_DOCS} "${COMMAND[@]}"
         SUITE_EXIT_CODE=$?
         ;;
     update)

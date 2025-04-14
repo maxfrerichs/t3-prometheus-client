@@ -9,10 +9,10 @@ class TokenAuthentication implements AuthenticationInterface
 {
     public function authenticate(ExtensionConfiguration $config, ServerRequestInterface $request): bool
     {
-        $token = $config->get(self::EXTENSION_KEY)['token'];
+        $token = $config->get(self::EXT_KEY)['token'];
 
         if ($this->encodeCredentials($token) === $request->getHeaderLine('Authorization') 
-            && $config->get(self::EXTENSION_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) 
+            && $config->get(self::EXT_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) 
         {
             return true;
         }

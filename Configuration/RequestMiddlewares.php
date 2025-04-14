@@ -2,7 +2,7 @@
 
 return [
     'frontend' => [
-        'mfr/typo3-prometheus' => [
+        'mfr/t3-prometheus-client' => [
             'target' =>
                 \MFR\T3PromClient\Middleware\PrometheusMiddleware::class,
             'before' => [

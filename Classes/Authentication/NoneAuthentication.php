@@ -10,7 +10,7 @@ class NoneAuthentication implements AuthenticationInterface
 {
     public function authenticate(ExtensionConfiguration $config, ServerRequestInterface $request): bool
     {
-        if ($config->get(self::EXTENSION_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) {
+        if ($config->get(self::EXT_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) {
             return true;
         }
         return false;
