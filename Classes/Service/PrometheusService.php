@@ -4,6 +4,7 @@ namespace MFR\T3PromClient\Service;
 
 use MFR\T3PromClient\Enum\MetricType;
 use MFR\T3PromClient\Enum\RetrieveMode;
+use MFR\T3PromClient\Event\BeforeMetricsRenderedEvent;
 use MFR\T3PromClient\Exception\UnknownTypeException;
 use MFR\T3PromClient\Metrics\MetricInterface;
 use MFR\T3PromClient\Registry\MetricRegistry;
@@ -11,6 +12,7 @@ use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 use Prometheus\Storage\InMemory;
 use PrometheusPushGateway\PushGateway;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
 class PrometheusService
@@ -20,12 +22,16 @@ class PrometheusService
     private string|bool $result = false;
     public function __construct(
         private readonly MetricRegistry $metricRegistry,
+        private readonly EventDispatcherInterface $eventDispatcher
     ){}
 
     public function renderMetrics(RetrieveMode $mode, ExtensionConfiguration $config): string|bool
     {
         // TODO: Allow configuration of storage adapter
         $metrics = $this->metricRegistry->getMetricsByRetrieveMode($mode);
+        $this->eventDispatcher->dispatch(
+            new BeforeMetricsRenderedEvent($metrics)
+        );
         $collectorRegistry = new CollectorRegistry(new InMemory());
         foreach ($metrics as $metric) {
             try {
