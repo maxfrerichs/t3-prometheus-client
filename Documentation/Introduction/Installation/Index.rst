@@ -44,5 +44,4 @@ Versioning
 
 .. note::
 
-   While in 0.x, breaking changes are to be expected. API stability cannot be guaranteed. Be careful for running in production. 
-
+   While in 0.x, breaking changes are to be expected. API stability cannot be guaranteed. Be careful when running in production.
