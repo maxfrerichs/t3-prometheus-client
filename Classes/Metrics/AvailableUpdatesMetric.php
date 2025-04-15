@@ -1,17 +1,18 @@
 <?php
+
 declare(strict_types=1);
 namespace MFR\T3PromClient\Metrics;
 
 use MFR\T3PromClient\Enum\MetricType;
 use MFR\T3PromClient\Enum\RetrieveMode;
-use MFR\T3PromClient\Metrics\MetricInterface;
+use MFR\T3PromClient\Exception\RemoteFetchException;
+use MFR\T3PromClient\Service\CoreVersionService;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use MFR\T3PromClient\Service\CoreVersionService;
-use MFR\T3PromClient\Exception\RemoteFetchException;
+
 final class AvailableUpdatesMetric implements MetricInterface
 {
-    protected string $name = "available_updates";
+    protected string $name = 'available_updates';
 
     protected string $namespace = self::DEFAULT_NAMESPACE;
 
@@ -21,7 +22,7 @@ final class AvailableUpdatesMetric implements MetricInterface
 
     protected array $labels = [];
 
-    protected string $help = "Number of available updates for this instance";
+    protected string $help = 'Number of available updates for this instance';
 
     public function getName(): string
     {
@@ -47,11 +48,11 @@ final class AvailableUpdatesMetric implements MetricInterface
     {
         return $this->help;
     }
-    
+
     public function getLabels(): array
     {
         $this->labels = [
-            'context' => Environment::getContext()->__toString()
+            'context' => Environment::getContext()->__toString(),
         ];
         return $this->labels;
     }
@@ -96,11 +97,10 @@ final class AvailableUpdatesMetric implements MetricInterface
         }
 
         foreach ($availableReleases as $availableRelease) {
-            if (($availableRelease->isElts() && $isCurrentVersionElts) || (!$availableRelease->isElts() && !$isCurrentVersionElts) ) {
+            if (($availableRelease->isElts() && $isCurrentVersionElts) || (!$availableRelease->isElts() && !$isCurrentVersionElts)) {
                 $availableUpdates++;
             }
         }
         return $availableUpdates;
     }
-
 }

@@ -1,7 +1,8 @@
 <?php
+
 namespace MFR\T3PromClient\Enum;
 
-enum RetrieveMode 
+enum RetrieveMode
 {
     case SCRAPE;
     case PUSH;

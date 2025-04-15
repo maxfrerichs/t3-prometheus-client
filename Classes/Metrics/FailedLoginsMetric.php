@@ -1,4 +1,5 @@
 <?php
+
 namespace MFR\T3PromClient\Metrics;
 
 use MFR\T3PromClient\Enum\MetricType;
@@ -9,7 +10,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class FailedLoginsMetric implements MetricInterface
 {
-    protected string $name = "failed_logins";
+    protected string $name = 'failed_logins';
 
     protected string $namespace = self::DEFAULT_NAMESPACE;
 
@@ -19,7 +20,7 @@ final class FailedLoginsMetric implements MetricInterface
 
     protected array $labels = [];
 
-    protected string $help = "Number of logged ServiceUnavailableExceptions for this instance";
+    protected string $help = 'Number of logged ServiceUnavailableExceptions for this instance';
 
     public function getName(): string
     {
@@ -49,26 +50,23 @@ final class FailedLoginsMetric implements MetricInterface
     public function getLabels(): array
     {
         $this->labels = [
-            'context' => Environment::getContext()->__toString()
+            'context' => Environment::getContext()->__toString(),
         ];
         return $this->labels;
     }
 
     public function getValue(): int
     {
-        
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_log');
         $queryBuilder->resetRestrictions();
         $queryBuilder->select('uid')->from('sys_log')
             ->where(
-                $queryBuilder->expr()->eq('error', 3))
+                $queryBuilder->expr()->eq('error', 3)
+            )
             ->andWhere(
                 $queryBuilder->expr()->eq('type', 255)
             );
-
         $logCount = $queryBuilder->executeQuery()->rowCount();
         return (int)$logCount;
     }
-
-
 }

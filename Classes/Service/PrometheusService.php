@@ -23,7 +23,8 @@ class PrometheusService
     public function __construct(
         private readonly MetricRegistry $metricRegistry,
         private readonly EventDispatcherInterface $eventDispatcher
-    ){}
+    ) {
+    }
 
     public function renderMetrics(RetrieveMode $mode, ExtensionConfiguration $config): string|bool
     {
@@ -35,24 +36,24 @@ class PrometheusService
         $collectorRegistry = new CollectorRegistry(new InMemory());
         foreach ($metrics as $metric) {
             try {
-                match($metric->getType()) {
+                match ($metric->getType()) {
                     MetricType::GAUGE => $this->renderGauge($collectorRegistry, $metric),
                     MetricType::COUNTER => $this->renderCounter($collectorRegistry, $metric),
                     MetricType::HISTOGRAM => $this->renderHistogram($collectorRegistry, $metric),
                     MetricType::SUMMARY => $this->renderSummary($collectorRegistry, $metric),
                 };
-            } catch (UnknownTypeException) {}
+            } catch (UnknownTypeException) {
+            }
         }
 
-
         match ($mode) {
-            RetrieveMode::SCRAPE => (function () use($collectorRegistry): void {
+            RetrieveMode::SCRAPE => (function () use ($collectorRegistry): void {
                 $renderer = new RenderTextFormat();
                 $this->result = $renderer->render($collectorRegistry->getMetricFamilySamples());
             })(),
-            RetrieveMode::PUSH => (function() use($collectorRegistry, $config) {
+            RetrieveMode::PUSH => (function () use ($collectorRegistry, $config) {
                 $gateway = new PushGateway($config->get(self::EXT_KEY, 'gateway'));
-                $gateway->push($collectorRegistry, "t3_prom_client_push");
+                $gateway->push($collectorRegistry, 't3_prom_client_push');
                 $this->result = true;
             })(),
         };
@@ -63,8 +64,8 @@ class PrometheusService
     {
         $collectorRegistry->registerGauge(
             $metric->getNamespace(),
-            $metric->getName(), 
-            $metric->getHelp(), 
+            $metric->getName(),
+            $metric->getHelp(),
             array_keys($metric->getLabels())
         )->set($metric->getValue(), array_values($metric->getLabels()));
     }
@@ -72,20 +73,19 @@ class PrometheusService
     protected function renderCounter(CollectorRegistry &$collectorRegistry, MetricInterface $metric): void
     {
         $collectorRegistry->registerCounter(
-            $metric->getNamespace(), 
-            $metric->getName(), 
-            $metric->getHelp(), 
+            $metric->getNamespace(),
+            $metric->getName(),
+            $metric->getHelp(),
             array_keys($metric->getLabels())
         )->incBy($metric->getValue(), array_values($metric->getLabels()));
     }
 
-
     protected function renderHistogram(CollectorRegistry &$collectorRegistry, MetricInterface $metric): void
     {
         $collectorRegistry->registerHistogram(
-            $metric->getNamespace(), 
-            $metric->getName(), 
-            $metric->getHelp(), 
+            $metric->getNamespace(),
+            $metric->getName(),
+            $metric->getHelp(),
             array_keys($metric->getLabels())
         )->observe($metric->getValue(), array_values($metric->getLabels()));
     }
@@ -93,9 +93,9 @@ class PrometheusService
     protected function renderSummary(CollectorRegistry &$collectorRegistry, MetricInterface $metric): void
     {
         $collectorRegistry->registerSummary(
-            $metric->getNamespace(), 
-            $metric->getName(), 
-            $metric->getHelp(), 
+            $metric->getNamespace(),
+            $metric->getName(),
+            $metric->getHelp(),
             array_keys($metric->getLabels())
         )->observe($metric->getValue(), array_values($metric->getLabels()));
     }

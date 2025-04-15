@@ -17,13 +17,12 @@ declare(strict_types=1);
 
 namespace MFR\T3PromClient\Service;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use MFR\T3PromClient\Exception\RemoteFetchException;
 use MFR\T3PromClient\Utility\CoreVersion\CoreRelease;
 use MFR\T3PromClient\Utility\CoreVersion\MaintenanceWindow;
 use MFR\T3PromClient\Utility\CoreVersion\MajorRelease;
-
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 class CoreVersionService
 {

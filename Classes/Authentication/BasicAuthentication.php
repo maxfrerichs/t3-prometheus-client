@@ -12,9 +12,8 @@ class BasicAuthentication implements AuthenticationInterface
         $username = $config->get(self::EXT_KEY)['basicAuth']['username'];
         $password = $config->get(self::EXT_KEY)['basicAuth']['password'];
 
-        if ($this->encodeCredentials($username, $password) === $request->getHeaderLine('Authorization') 
-            && $config->get(self::EXT_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) 
-        {
+        if ($this->encodeCredentials($username, $password) === $request->getHeaderLine('Authorization')
+            && $config->get(self::EXT_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) {
             return true;
         }
         return false;
@@ -27,6 +26,6 @@ class BasicAuthentication implements AuthenticationInterface
 
     private function encodeCredentials(string $username, string $password): string
     {
-        return "Basic ".base64_encode($username . ':' . $password);
+        return 'Basic ' . base64_encode($username . ':' . $password);
     }
 }

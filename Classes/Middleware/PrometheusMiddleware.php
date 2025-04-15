@@ -23,7 +23,8 @@ class PrometheusMiddleware implements MiddlewareInterface
         private readonly ExtensionConfiguration $config,
         private readonly PrometheusService $promService,
         private readonly AuthenticationFactory $authFactory,
-    ) {}
+    ) {
+    }
 
     public function process(
         ServerRequestInterface $request,
@@ -34,7 +35,7 @@ class PrometheusMiddleware implements MiddlewareInterface
         );
 
         if (!$authentication->authenticate(config: $this->config, request: $request) && $this->config->get(self::EXT_KEY)['debug'] == false) {
-            return $this->responseFactory->createResponse(403, "Authorization failed.");
+            return $this->responseFactory->createResponse(403, 'Authorization failed.');
         }
 
         if (($request->getRequestTarget() != $this->config->get(self::EXT_KEY)['path'])) {

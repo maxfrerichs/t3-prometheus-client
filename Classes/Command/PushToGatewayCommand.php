@@ -16,7 +16,7 @@ final class PushToGatewayCommand extends Command
     public function __construct(
         private readonly PrometheusService $promService,
         private readonly ExtensionConfiguration $config,
-    ){
+    ) {
         parent::__construct();
     }
 

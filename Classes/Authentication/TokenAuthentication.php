@@ -11,9 +11,8 @@ class TokenAuthentication implements AuthenticationInterface
     {
         $token = $config->get(self::EXT_KEY)['token'];
 
-        if ($this->encodeCredentials($token) === $request->getHeaderLine('Authorization') 
-            && $config->get(self::EXT_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) 
-        {
+        if ($this->encodeCredentials($token) === $request->getHeaderLine('Authorization')
+            && $config->get(self::EXT_KEY)['port'] == $request->getServerParams()['SERVER_PORT']) {
             return true;
         }
         return false;
@@ -26,6 +25,6 @@ class TokenAuthentication implements AuthenticationInterface
 
     private function encodeCredentials(string $token): string
     {
-        return "Bearer ".$token;
+        return 'Bearer ' . $token;
     }
 }

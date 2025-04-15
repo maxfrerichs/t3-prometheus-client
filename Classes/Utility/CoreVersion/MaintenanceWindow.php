@@ -16,7 +16,6 @@ declare(strict_types=1);
  */
 namespace MFR\T3PromClient\Utility\CoreVersion;
 
-
 class MaintenanceWindow
 {
     protected $communitySupport;

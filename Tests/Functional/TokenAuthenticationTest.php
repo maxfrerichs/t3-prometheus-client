@@ -20,10 +20,10 @@ class TokenAuthenticationTest extends FunctionalTestCase
     {
         $uri = new Uri('http://localhost/');
         $headers = [
-            'authorization' => 'Bearer EGM0dp4QCVomiuA40kJcT0hu6Fv6Q7ckoJZ7Btq66ko1AKHJKcqVtscxhJXZsqJ3'
+            'authorization' => 'Bearer EGM0dp4QCVomiuA40kJcT0hu6Fv6Q7ckoJZ7Btq66ko1AKHJKcqVtscxhJXZsqJ3',
         ];
         $server = [
-            'SERVER_PORT' => 80
+            'SERVER_PORT' => 80,
         ];
         $server['server'] = true;
         $request = new ServerRequest($uri, 'GET', 'php://memory', $headers, $server);
@@ -42,20 +42,19 @@ class TokenAuthenticationTest extends FunctionalTestCase
         self::assertTrue($this->subject->authenticate($extConf, $request));
     }
 
-
     public function testInvalidTokenAuthentication(): void
     {
         $uri = new Uri('http://localhost/');
         $headers = [
-            'authorization' => 'Bearer EGM0dp4QCVomiuA40kJcT0hu6Fv6Q7ckoJZ7Btq66ko1AKHJKcqVtscxhJXZsqJ3'
+            'authorization' => 'Bearer EGM0dp4QCVomiuA40kJcT0hu6Fv6Q7ckoJZ7Btq66ko1AKHJKcqVtscxhJXZsqJ3',
         ];
         $server = [
-            'SERVER_PORT' => 80
+            'SERVER_PORT' => 80,
         ];
         $server['server'] = true;
         $request = new ServerRequest($uri, 'GET', 'php://memory', $headers, $server);
         $extConf = new ExtensionConfiguration();
-        $this->setUpBeforeClass();
+        self::setUpBeforeClass();
         $extConf->set('t3_prometheus_client', [
             'basicAuth' => [
                 'password' => '',

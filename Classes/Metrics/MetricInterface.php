@@ -1,6 +1,8 @@
 <?php
+
 declare(strict_types=1);
 namespace MFR\T3PromClient\Metrics;
+
 use MFR\T3PromClient\Enum\MetricType;
 use MFR\T3PromClient\Enum\RetrieveMode;
 

@@ -20,10 +20,10 @@ class BasicAuthenticationTest extends FunctionalTestCase
     {
         $uri = new Uri('http://localhost/');
         $headers = [
-            'authorization' => 'Basic dGVzdDpwYXNzd29yZA=='
+            'authorization' => 'Basic dGVzdDpwYXNzd29yZA==',
         ];
         $server = [
-            'SERVER_PORT' => 80
+            'SERVER_PORT' => 80,
         ];
         $server['server'] = true;
         $request = new ServerRequest($uri, 'GET', 'php://memory', $headers, $server);
@@ -42,20 +42,19 @@ class BasicAuthenticationTest extends FunctionalTestCase
         self::assertTrue($this->subject->authenticate($extConf, $request));
     }
 
-
     public function testInvalidBasicAuthentication(): void
     {
         $uri = new Uri('http://localhost/');
         $headers = [
-            'authorization' => 'Basic dGVzdDpwYXNzd29yZHM='
+            'authorization' => 'Basic dGVzdDpwYXNzd29yZHM=',
         ];
         $server = [
-            'SERVER_PORT' => 80
+            'SERVER_PORT' => 80,
         ];
         $server['server'] = true;
         $request = new ServerRequest($uri, 'GET', 'php://memory', $headers, $server);
         $extConf = new ExtensionConfiguration();
-        $this->setUpBeforeClass();
+        self::setUpBeforeClass();
         $extConf->set('t3_prometheus_client', [
             'basicAuth' => [
                 'username' => 'test',
