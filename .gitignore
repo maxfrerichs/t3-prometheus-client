@@ -12,3 +12,4 @@ config
 composer.json.orig
 composer.json.testing
 bck-runTests.sh
+ext_conf_template.dev.txt
