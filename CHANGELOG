@@ -1,4 +1,7 @@
-[RELEASE] Release of t3-prometheus-client 0.10.0
+[RELEASE] Release of t3-prometheus-client 0.10.2
+[TASK] rework GitHub CI, add more tests
+
+[RELEASE] Release of t3-prometheus-client 0.10.1
 [!!!][BUGFIX] add missing pushgateway option to ext_conf_template.txt
 
 [RELEASE] Release of t3-prometheus-client 0.10.0
