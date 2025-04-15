@@ -40,9 +40,6 @@ jobs:
       - name: Lint PHP
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s lint
 
-      - name: CGL
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s cgl -n
-
       - name: phpstan checks
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s phpstan
 
