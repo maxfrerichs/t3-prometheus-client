@@ -3,43 +3,72 @@ name: t3-prometheus-client CI
 on:
   push:
   pull_request:
-    branches:
-      - main
+  schedule:
+    - cron:  '56 5 * * *'
+
 jobs:
-  run_tests_for_v13:
-    name: Run Tests for TYPO3 13.4
-    runs-on: ubuntu-latest
+  testsuite:
+    name: Run tests for extension
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        php: [ '8.2', '8.3', '8.4' ]
+        TYPO3: [ '12' ]
+        include:
+          - TYPO3: '12'
+            php: '8.2'
+          - TYPO3: '12'
+            php: '8.3'
+          - TYPO3: '12'
+            php: '8.4'
+          - TYPO3: '13'
+            php: '8.2'
+          - TYPO3: '13'
+            php: '8.3'
+          - TYPO3: '13'
+            php: '8.4'
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-      - name: Bootstrap testing environment
-        run: ./Build/Scripts/runTests.sh -t 13 -p 8.4 -s composer install
-      - name: Run phpstan
-        run: ./Build/Scripts/runTests.sh -t 13 -p 8.4 -s phpstan
-      - name: Run unit tests
-        run: ./Build/Scripts/runTests.sh -t 13 -p 8.4 -s unit
-      - name: Run functional tests
-        run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s functional
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  run_tests_for_v12:
-    name: Run Tests for TYPO3 12.4
-    runs-on: ubuntu-latest
+      - name: Install testing system
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s composerInstall
+
+      - name: Validate composer.json
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s composerValidate
+
+      - name: Lint PHP
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s lint
+
+      - name: CGL
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s cgl -n
+
+      - name: phpstan checks
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s phpstan
+
+      - name: Unit Tests
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s unit
+
+      - name: Functional Tests
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
+  
+  testdocs:
+    name: Render documentation
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-      - name: Bootstrap testing environment
-        run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s composer install  
-      - name: Run phpstan
-        run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s phpstan
-      - name: Run unit tests
-        run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s unit
-      - name: Run functional tests
-        run: ./Build/Scripts/runTests.sh -t 12 -p 8.4 -s functional
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Test if the documentation will render without warnings
+        run: |
+          mkdir -p Documentation-GENERATED-temp \
+          && docker run --rm --pull always -v $(pwd):/project \
+              ghcr.io/typo3-documentation/render-guides:latest --config=Documentation --no-progress --minimal-test
+      
   publish_to_ter:
     runs-on: ubuntu-latest
     name: Publish Extension to TER
-    needs: [run_tests_for_v13,run_tests_for_v12]
+    needs: [testsuite,testdocs]
     if: startsWith(github.ref, 'refs/tags/')
     env:
       TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}

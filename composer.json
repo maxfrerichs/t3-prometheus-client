@@ -2,7 +2,6 @@
     "name": "maxfrerichs/t3-prometheus-client",
     "type": "typo3-cms-extension",
     "description": "TYPO3 client for Prometheus",
-    "version": "0.10.1",
     "license": [
         "GPL-2.0-or-later"
     ],
@@ -15,6 +14,9 @@
     ],
     "support": {
         "email": "maxfrerichs@gmx.de"
+    },
+    "replace": {
+        "typo3-ter/t3-prometheus-client": "self.version"
     },
     "require": {
         "php": ">=8.2",
@@ -58,8 +60,8 @@
         }
     },
     "scripts": {
-        "post-autoload-dump": [
-                "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
+        "prepare-tests": [
+            "if [ ! -e .Build/Web/typo3conf/sites -a -e .Build/Web/typo3conf ]; then cd .Build/Web/typo3conf && ln -s ../../../Build/sites && cd -; fi"
         ]
     },
     "archive": {

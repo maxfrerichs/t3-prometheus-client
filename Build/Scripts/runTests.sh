@@ -326,13 +326,13 @@ while getopts "a:b:s:d:i:t:p:xy:o:nhug" OPT; do
             ;;
         t)
             TYPO3=${OPTARG}
-            if ! [[ ${TYPO3} =~ ^(11|12|13)$ ]]; then
+            if ! [[ ${TYPO3} =~ ^(12|13)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
           ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2|8.3|8.4)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.2|8.3|8.4)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
@@ -474,14 +474,10 @@ case ${TEST_SUITE} in
           fi
           ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name composer-install-${SUFFIX} -e COMPOSER_CACHE_DIR=.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} /bin/sh -c "
             php -v | grep '^PHP';
-            if [ ${TYPO3} -eq 11 ]; then
-              composer require typo3/cms-core:^11.5 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
-              composer prepare-tests
-            elif [ ${TYPO3} -eq 13 ]; then
+            if [ ${TYPO3} -eq 13 ]; then
               composer require typo3/cms-core:^13.4 --dev -W --no-progress --no-interaction
               composer prepare-tests
             else
-              composer require typo3/cms-core:^12.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
               composer prepare-tests
             fi
           "
@@ -496,11 +492,11 @@ case ${TEST_SUITE} in
           fi
           ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name composer-validate-${SUFFIX} -e COMPOSER_CACHE_DIR=.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} /bin/sh -c "
             php -v | grep '^PHP';
-            elif [ ${TYPO3} -eq 13 ]; then
+            if [ ${TYPO3} -eq 13 ]; then
               composer require typo3/cms-core:^13.0 --dev -W --no-progress --no-interaction
               composer prepare-tests
             else
-              composer require typo3/cms-core:^12.4 ichhabrecht/content-defender --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^12.4 --dev -W --no-progress --no-interaction
               composer prepare-tests
             fi
             composer validate
@@ -557,62 +553,6 @@ case ${TEST_SUITE} in
                 SUITE_EXIT_CODE=$?
                 ;;
         esac
-        ;;
-    metrics)
-        echo "Testing /metrics endpoint..."
-        # Start web server with TYPO3 instance
-        if [ ${CONTAINER_BIN} = "docker" ]; then
-            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name metrics-web-${SUFFIX} \
-                --network ${NETWORK} --network-alias web \
-                --add-host "${CONTAINER_HOST}:host-gateway" ${USERSET} \
-                -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} \
-                -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" \
-                -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web \
-                -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web \
-                ${IMAGE_PHP} php -S web:${HTTP_PORT} -t ${CORE_ROOT}/.Build/Web >/dev/null
-        else
-            ${CONTAINER_BIN} run --rm ${CI_PARAMS} -d --name metrics-web-${SUFFIX} \
-                --network ${NETWORK} --network-alias web \
-                -v ${CORE_ROOT}:${CORE_ROOT} ${XDEBUG_MODE} \
-                -e XDEBUG_CONFIG="${XDEBUG_CONFIG}" \
-                -e TYPO3_PATH_ROOT=${CORE_ROOT}/.Build/Web \
-                -e TYPO3_PATH_APP=${CORE_ROOT}/.Build/Web \
-                ${IMAGE_PHP} php -S web:${HTTP_PORT} -t ${CORE_ROOT}/.Build/Web >/dev/null
-        fi
-
-        waitFor web ${HTTP_PORT}
-
-        # Test the metrics endpoint
-        echo "Testing metrics endpoint access..."
-        ${CONTAINER_BIN} run --rm ${CONTAINER_COMMON_PARAMS} \
-            --name metrics-test-${SUFFIX} ${IMAGE_ALPINE} \
-            /bin/sh -c "
-                # Test without auth header (should fail)
-                echo 'Testing without auth header (expecting 401)...'
-                echo 'http://web:${HTTP_PORT}${METRICS_ENDPOINT}'
-                RESPONSE=\$(wget -qO- --server-response http://web:${HTTP_PORT}${METRICS_ENDPOINT} 2>&1)
-                if ! echo \"\$RESPONSE\" | grep -q '401'; then
-                    echo 'Error: Expected 401 response for request without auth'
-                    exit 1
-                fi
-
-                # Test with correct auth header
-                echo 'Testing with correct auth header...'
-                RESPONSE=\$(wget -qO- --header=\"Authorization: ${METRICS_AUTH}\" http://web:${HTTP_PORT}${METRICS_ENDPOINT})
-                if ! echo \"\$RESPONSE\" | grep -q 'typo3_'; then
-                    echo 'Error: Response does not contain TYPO3 metrics'
-                    exit 1
-                fi
-
-                # Test metric format
-                if ! echo \"\$RESPONSE\" | grep -qE '^typo3_[a-zA-Z_]+{[^}]*} [0-9]+'; then
-                    echo 'Error: Metrics format does not match Prometheus requirements'
-                    exit 1
-                fi
-
-                echo 'Metrics endpoint tests passed successfully!'
-            "
-        SUITE_EXIT_CODE=$?
         ;;
     phpstan)
         COMMAND=(php -dxdebug.mode=off .Build/bin/phpstan analyse -c Build/phpstan.neon --no-progress --no-interaction --memory-limit 4G "$@")
