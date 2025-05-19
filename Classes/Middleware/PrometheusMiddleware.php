@@ -3,7 +3,8 @@
 namespace MFR\T3PromClient\Middleware;
 
 use MFR\T3PromClient\Authentication\AuthenticationFactory;
-use MFR\T3PromClient\Enum\RetrieveMode;
+use MFR\T3PromClient\Enum\Status;
+use MFR\T3PromClient\Message\PromClientRequestMessage;
 use MFR\T3PromClient\Service\PrometheusService;
 use Prometheus\RenderTextFormat;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -12,8 +13,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-
 class PrometheusMiddleware implements MiddlewareInterface
 {
     const EXT_KEY = 't3_prometheus_client';
@@ -23,6 +25,8 @@ class PrometheusMiddleware implements MiddlewareInterface
         private readonly ExtensionConfiguration $config,
         private readonly PrometheusService $promService,
         private readonly AuthenticationFactory $authFactory,
+        private readonly MessageBusInterface $bus,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -35,6 +39,7 @@ class PrometheusMiddleware implements MiddlewareInterface
         );
 
         if (!$authentication->authenticate(config: $this->config, request: $request) && $this->config->get(self::EXT_KEY)['debug'] == false) {
+            $this->logger->warning("Authorization failed.");
             return $this->responseFactory->createResponse(403, 'Authorization failed.');
         }
 
@@ -42,7 +47,17 @@ class PrometheusMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        echo $this->promService->renderMetrics(RetrieveMode::SCRAPE, $this->config);
-        return $this->responseFactory->createResponse(200)->withHeader('Content-Type', RenderTextFormat::MIME_TYPE);
+        $this->bus->dispatch(
+            new PromClientRequestMessage(status: Status::REQUEST_DISPATCHED)
+        );
+
+        $streamBody = $this->streamFactory->createStream(
+            $this->promService->read()
+        );
+
+        return $this->responseFactory->createResponse(200)
+            ->withBody($streamBody)
+            ->withHeader('Content-Type', RenderTextFormat::MIME_TYPE)
+            ->withHeader('Content-Length', (string)$streamBody->getSize());
     }
 }

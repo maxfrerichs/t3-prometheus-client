@@ -3,37 +3,43 @@
 namespace MFR\T3PromClient\Service;
 
 use MFR\T3PromClient\Enum\MetricType;
-use MFR\T3PromClient\Enum\RetrieveMode;
 use MFR\T3PromClient\Event\BeforeMetricsRenderedEvent;
 use MFR\T3PromClient\Exception\UnknownTypeException;
 use MFR\T3PromClient\Metrics\MetricInterface;
 use MFR\T3PromClient\Registry\MetricRegistry;
+use MFR\T3PromClient\Storage\PromClientPDO;
 use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
-use Prometheus\Storage\InMemory;
-use PrometheusPushGateway\PushGateway;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use Prometheus\Storage\PDO;
 
-class PrometheusService
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\SingletonInterface;
+
+class PrometheusService implements SingletonInterface
 {
     const EXT_KEY = 't3_prometheus_client';
 
     private string|bool $result = false;
     public function __construct(
         private readonly MetricRegistry $metricRegistry,
-        private readonly EventDispatcherInterface $eventDispatcher
-    ) {
-    }
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly PromClientPDO $db,
+    ) {}
 
-    public function renderMetrics(RetrieveMode $mode, ExtensionConfiguration $config): string|bool
+    public function write(bool $refresh): bool
     {
         // TODO: Allow configuration of storage adapter
-        $metrics = $this->metricRegistry->getMetricsByRetrieveMode($mode);
+        $metrics = $this->metricRegistry->getMetrics();
         $this->eventDispatcher->dispatch(
             new BeforeMetricsRenderedEvent($metrics)
         );
-        $collectorRegistry = new CollectorRegistry(new InMemory());
+
+        $collectorRegistry = new CollectorRegistry(new PDO(database: $this->db), false);
+
+        if ($refresh) {
+            $collectorRegistry->wipeStorage();
+        }
+
         foreach ($metrics as $metric) {
             try {
                 match ($metric->getType()) {
@@ -43,60 +49,79 @@ class PrometheusService
                     MetricType::SUMMARY => $this->renderSummary($collectorRegistry, $metric),
                 };
             } catch (UnknownTypeException) {
+                return false;
             }
         }
 
-        match ($mode) {
-            RetrieveMode::SCRAPE => (function () use ($collectorRegistry): void {
-                $renderer = new RenderTextFormat();
-                $this->result = $renderer->render($collectorRegistry->getMetricFamilySamples());
-            })(),
-            RetrieveMode::PUSH => (function () use ($collectorRegistry, $config) {
-                $gateway = new PushGateway($config->get(self::EXT_KEY, 'gateway'));
-                $gateway->push($collectorRegistry, 't3_prom_client_push');
-                $this->result = true;
-            })(),
-        };
-        return $this->result;
+        return true;
+    }
+
+
+    public function read(): string
+    {
+        $collectorRegistry = new CollectorRegistry(new PDO(database: $this->db), false);
+        $renderer = new RenderTextFormat();
+        return $renderer->render($collectorRegistry->getMetricFamilySamples());
+    }
+
+    public function refresh(): void
+    {
+        $this->write(refresh: true);
     }
 
     protected function renderGauge(CollectorRegistry &$collectorRegistry, MetricInterface $metric): void
     {
-        $collectorRegistry->registerGauge(
+        $gauge = $collectorRegistry->getOrRegisterGauge(
             $metric->getNamespace(),
             $metric->getName(),
             $metric->getHelp(),
             array_keys($metric->getLabels())
-        )->set($metric->getValue(), array_values($metric->getLabels()));
+        );
+        $gauge->set(
+            $metric->getValue(),
+            array_values($metric->getLabels())
+        );
     }
 
     protected function renderCounter(CollectorRegistry &$collectorRegistry, MetricInterface $metric): void
     {
-        $collectorRegistry->registerCounter(
+        $counter = $collectorRegistry->getOrRegisterCounter(
             $metric->getNamespace(),
             $metric->getName(),
             $metric->getHelp(),
             array_keys($metric->getLabels())
-        )->incBy($metric->getValue(), array_values($metric->getLabels()));
+        );
+        $counter->incBy(
+            $metric->getValue(),
+            array_values($metric->getLabels())
+        );
     }
 
     protected function renderHistogram(CollectorRegistry &$collectorRegistry, MetricInterface $metric): void
     {
-        $collectorRegistry->registerHistogram(
+        $histogram = $collectorRegistry->getOrRegisterHistogram(
             $metric->getNamespace(),
             $metric->getName(),
             $metric->getHelp(),
             array_keys($metric->getLabels())
-        )->observe($metric->getValue(), array_values($metric->getLabels()));
+        );
+        $histogram->observe(
+            $metric->getValue(),
+            array_values($metric->getLabels())
+        );
     }
 
     protected function renderSummary(CollectorRegistry &$collectorRegistry, MetricInterface $metric): void
     {
-        $collectorRegistry->registerSummary(
+        $summary = $collectorRegistry->getOrRegisterSummary(
             $metric->getNamespace(),
             $metric->getName(),
             $metric->getHelp(),
             array_keys($metric->getLabels())
-        )->observe($metric->getValue(), array_values($metric->getLabels()));
+        );
+        $summary->observe(
+            $metric->getValue(),
+            array_values($metric->getLabels())
+        );
     }
 }
