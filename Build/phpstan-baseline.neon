@@ -1,16 +1,16 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Property MFR\\T3PromClient\\Message\\PromClientRequestMessage\:\:\$status is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: ../Classes/Message/PromClientRequestMessage.php
+
+		-
 			message: '#^Method MFR\\T3PromClient\\Metrics\\AvailableUpdatesMetric\:\:getValue\(\) never returns float so it can be removed from the return type\.$#'
 			identifier: return.unusedType
 			count: 1
 			path: ../Classes/Metrics/AvailableUpdatesMetric.php
-
-		-
-			message: '#^Property MFR\\T3PromClient\\Middleware\\PrometheusMiddleware\:\:\$streamFactory is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: ../Classes/Middleware/PrometheusMiddleware.php
 
 		-
 			message: '#^Match expression does not handle remaining value\: mixed$#'
