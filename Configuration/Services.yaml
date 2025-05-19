@@ -17,8 +17,3 @@ services:
     arguments:
       - !tagged_iterator prometheus.metric
 
-  MFR\T3PromClient\Command\PushToGatewayCommand:
-    tags:
-      - name: console.command
-        command: 'prometheus:push'
-        description: 'Push metrics to Prometheus gateway.'
