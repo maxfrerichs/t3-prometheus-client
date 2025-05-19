@@ -13,22 +13,22 @@ use Prometheus\RenderTextFormat;
 use Prometheus\Storage\PDO;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 
 class PrometheusService implements SingletonInterface
 {
     const EXT_KEY = 't3_prometheus_client';
 
-    private string|bool $result = false;
     public function __construct(
         private readonly MetricRegistry $metricRegistry,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly PromClientPDO $db,
+        private readonly LoggerInterface $logger
     ) {}
 
-    public function write(bool $refresh): bool
+    public function write(bool $refresh): void
     {
-        // TODO: Allow configuration of storage adapter
         $metrics = $this->metricRegistry->getMetrics();
         $this->eventDispatcher->dispatch(
             new BeforeMetricsRenderedEvent($metrics)
@@ -48,12 +48,11 @@ class PrometheusService implements SingletonInterface
                     MetricType::HISTOGRAM => $this->renderHistogram($collectorRegistry, $metric),
                     MetricType::SUMMARY => $this->renderSummary($collectorRegistry, $metric),
                 };
-            } catch (UnknownTypeException) {
-                return false;
+            } catch (UnknownTypeException $e) {
+                $this->logger->warning($e);
+                continue;
             }
         }
-
-        return true;
     }
 
 

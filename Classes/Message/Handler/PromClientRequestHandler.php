@@ -12,9 +12,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 final class PromClientRequestHandler
 {
     public function __construct(
-        private readonly MessageBusInterface $bus,
         private readonly PrometheusService $promService,
-        private readonly LoggerInterface $logger
     ){
 
     }
