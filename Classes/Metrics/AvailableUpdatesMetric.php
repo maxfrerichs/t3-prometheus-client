@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace MFR\T3PromClient\Metrics;
 
 use MFR\T3PromClient\Enum\MetricType;
-use MFR\T3PromClient\Enum\RetrieveMode;
+use MFR\T3PromClient\Enum\Mode;
 use MFR\T3PromClient\Exception\RemoteFetchException;
 use MFR\T3PromClient\Service\CoreVersionService;
 use TYPO3\CMS\Core\Core\Environment;
@@ -18,7 +18,7 @@ final class AvailableUpdatesMetric implements MetricInterface
 
     protected MetricType $type = MetricType::GAUGE;
 
-    protected RetrieveMode $mode = RetrieveMode::SCRAPE;
+    protected Mode $mode = Mode::SCRAPE;
 
     protected array $labels = [];
 
@@ -39,7 +39,7 @@ final class AvailableUpdatesMetric implements MetricInterface
         return $this->type;
     }
 
-    public function getMode(): RetrieveMode
+    public function getMode(): Mode
     {
         return $this->mode;
     }

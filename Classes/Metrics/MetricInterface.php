@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace MFR\T3PromClient\Metrics;
 
 use MFR\T3PromClient\Enum\MetricType;
-use MFR\T3PromClient\Enum\RetrieveMode;
+use MFR\T3PromClient\Enum\Mode;
 
 interface MetricInterface
 {
@@ -12,7 +12,7 @@ interface MetricInterface
     public function getName(): string;
     public function getNamespace(): string;
     public function getType(): MetricType;
-    public function getMode(): RetrieveMode;
+    public function getMode(): Mode;
     public function getHelp(): string;
     public function getLabels(): array;
     public function getValue(): int|float;

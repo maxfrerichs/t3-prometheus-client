@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MFR\T3PromClient\Registry;
 
-use MFR\T3PromClient\Enum\RetrieveMode;
+use MFR\T3PromClient\Enum\Mode;
 use MFR\T3PromClient\Metrics\MetricInterface;
 
 /**
@@ -44,7 +44,7 @@ class MetricRegistry
      *
      * @return MetricInterface[]
      */
-    public function getMetricsByRetrieveMode(RetrieveMode $mode): array
+    public function getMetricsByMode(Mode $mode): array
     {
         foreach ($this->metrics as $metric) {
             if ($metric->getMode() != $mode) {

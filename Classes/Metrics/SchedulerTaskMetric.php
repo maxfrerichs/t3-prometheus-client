@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace MFR\T3PromClient\Metrics;
 
 use MFR\T3PromClient\Enum\MetricType;
-use MFR\T3PromClient\Enum\RetrieveMode;
+use MFR\T3PromClient\Enum\Mode;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -19,7 +19,7 @@ final class SchedulerTaskMetric implements MetricInterface
 
     protected MetricType $type = MetricType::GAUGE;
 
-    protected RetrieveMode $mode = RetrieveMode::SCRAPE;
+    protected Mode $mode = Mode::SCRAPE;
 
     protected array $labels = [];
 
@@ -40,7 +40,7 @@ final class SchedulerTaskMetric implements MetricInterface
         return $this->type;
     }
 
-    public function getMode(): RetrieveMode
+    public function getMode(): Mode
     {
         return $this->mode;
     }
@@ -63,7 +63,6 @@ final class SchedulerTaskMetric implements MetricInterface
         if (!ExtensionManagementUtility::isLoaded('scheduler')) {
             return -1;
         }
-
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_scheduler_task');
         $count = $queryBuilder
             ->count('uid')
