@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace MFR\T3PromClient\Enum;
 
-enum MetricType
+enum Type
 {
     case GAUGE;
     case COUNTER;

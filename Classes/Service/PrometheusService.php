@@ -2,7 +2,7 @@
 
 namespace MFR\T3PromClient\Service;
 
-use MFR\T3PromClient\Enum\MetricType;
+use MFR\T3PromClient\Enum\Type;
 use MFR\T3PromClient\Event\BeforeMetricsRenderedEvent;
 use MFR\T3PromClient\Exception\UnknownTypeException;
 use MFR\T3PromClient\Metrics\MetricInterface;
@@ -43,10 +43,10 @@ class PrometheusService implements SingletonInterface
         foreach ($metrics as $metric) {
             try {
                 match ($metric->getType()) {
-                    MetricType::GAUGE => $this->renderGauge($collectorRegistry, $metric),
-                    MetricType::COUNTER => $this->renderCounter($collectorRegistry, $metric),
-                    MetricType::HISTOGRAM => $this->renderHistogram($collectorRegistry, $metric),
-                    MetricType::SUMMARY => $this->renderSummary($collectorRegistry, $metric),
+                    Type::GAUGE => $this->renderGauge($collectorRegistry, $metric),
+                    Type::COUNTER => $this->renderCounter($collectorRegistry, $metric),
+                    Type::HISTOGRAM => $this->renderHistogram($collectorRegistry, $metric),
+                    Type::SUMMARY => $this->renderSummary($collectorRegistry, $metric),
                 };
             } catch (UnknownTypeException $e) {
                 $this->logger->warning($e);

@@ -3,59 +3,19 @@
 declare(strict_types=1);
 namespace MFR\T3PromClient\Metrics;
 
-use MFR\T3PromClient\Enum\MetricType;
-use MFR\T3PromClient\Enum\Mode;
+use MFR\T3PromClient\Enum\Type;
 use MFR\T3PromClient\Exception\RemoteFetchException;
 use MFR\T3PromClient\Service\CoreVersionService;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class AvailableUpdatesMetric implements MetricInterface
+final class AvailableUpdatesMetric extends AbstractMetric
 {
     protected string $name = 'available_updates';
 
-    protected string $namespace = self::DEFAULT_NAMESPACE;
-
-    protected MetricType $type = MetricType::GAUGE;
-
-    protected Mode $mode = Mode::SCRAPE;
-
-    protected array $labels = [];
+    protected Type $type = Type::GAUGE;
 
     protected string $help = 'Number of available updates for this instance';
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getType(): MetricType
-    {
-        return $this->type;
-    }
-
-    public function getMode(): Mode
-    {
-        return $this->mode;
-    }
-
-    public function getHelp(): string
-    {
-        return $this->help;
-    }
-
-    public function getLabels(): array
-    {
-        $this->labels = [
-            'context' => Environment::getContext()->__toString(),
-        ];
-        return $this->labels;
-    }
 
     public function getValue(): int|float
     {

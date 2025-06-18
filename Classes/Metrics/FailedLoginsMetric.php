@@ -2,58 +2,18 @@
 
 namespace MFR\T3PromClient\Metrics;
 
-use MFR\T3PromClient\Enum\MetricType;
-use MFR\T3PromClient\Enum\Mode;
-use TYPO3\CMS\Core\Core\Environment;
+use MFR\T3PromClient\Enum\Type;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class FailedLoginsMetric implements MetricInterface
+final class FailedLoginsMetric extends AbstractMetric
 {
     protected string $name = 'failed_logins';
 
-    protected string $namespace = self::DEFAULT_NAMESPACE;
+    protected Type $type = Type::HISTOGRAM;
 
-    protected MetricType $type = MetricType::HISTOGRAM;
+    protected string $help = 'Number of failed logins for this instance';
 
-    protected Mode $mode = Mode::SCRAPE;
-
-    protected array $labels = [];
-
-    protected string $help = 'Number of logged ServiceUnavailableExceptions for this instance';
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getType(): MetricType
-    {
-        return $this->type;
-    }
-
-    public function getMode(): Mode
-    {
-        return $this->mode;
-    }
-
-    public function getHelp(): string
-    {
-        return $this->help;
-    }
-
-    public function getLabels(): array
-    {
-        $this->labels = [
-            'context' => Environment::getContext()->__toString(),
-        ];
-        return $this->labels;
-    }
 
     public function getValue(): int
     {
