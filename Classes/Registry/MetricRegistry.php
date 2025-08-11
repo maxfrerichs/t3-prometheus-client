@@ -46,12 +46,7 @@ class MetricRegistry
      */
     public function getMetricsByRetrieveMode(RetrieveMode $mode): array
     {
-        foreach ($this->metrics as $metric) {
-            if ($metric->getMode() != $mode) {
-                unset($this->metrics[$metric->getName()]);
-            }
-        }
-        return $this->metrics;
+        return array_filter($this->metrics, fn($metric) => $metric->getMode() == $mode);
     }
 
     public function hasMetric(string $identifier): bool
