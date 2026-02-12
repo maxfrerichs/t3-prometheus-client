@@ -27,6 +27,12 @@ jobs:
             php: '8.3'
           - TYPO3: '13'
             php: '8.4'
+          - TYPO3: '14'
+            php: '8.2'
+          - TYPO3: '14'
+            php: '8.3'
+          - TYPO3: '14'
+            php: '8.4'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -48,7 +54,7 @@ jobs:
 
       - name: Functional Tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t ${{ matrix.TYPO3 }} -s functional
-  
+
   testdocs:
     name: Render documentation
     runs-on: ubuntu-22.04
@@ -61,7 +67,7 @@ jobs:
           mkdir -p Documentation-GENERATED-temp \
           && docker run --rm --pull always -v $(pwd):/project \
               ghcr.io/typo3-documentation/render-guides:latest --config=Documentation --no-progress --minimal-test
-      
+
   publish_to_ter:
     runs-on: ubuntu-latest
     name: Publish Extension to TER
