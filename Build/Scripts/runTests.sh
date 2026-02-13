@@ -503,7 +503,7 @@ case ${TEST_SUITE} in
             if [ ${TYPO3} -eq 14 ]; then
               composer require typo3/cms-core:^14.0 --dev -W --no-progress --no-interaction
               composer prepare-tests
-            if [ ${TYPO3} -eq 13 ]; then
+            elif [ ${TYPO3} -eq 13 ]; then
               composer require typo3/cms-core:^13.0 --dev -W --no-progress --no-interaction
               composer prepare-tests
             else
