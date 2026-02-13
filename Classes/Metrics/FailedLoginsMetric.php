@@ -8,7 +8,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class FailedLoginsMetric implements MetricInterface
+final class FailedLoginsMetric extends AbstractMetric
 {
     protected string $name = 'failed_logins';
 
@@ -20,32 +20,8 @@ final class FailedLoginsMetric implements MetricInterface
 
     protected array $labels = [];
 
-    protected string $help = 'Number of logged ServiceUnavailableExceptions for this instance';
+    protected string $help = 'Number of failed logins for this instance';
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getType(): MetricType
-    {
-        return $this->type;
-    }
-
-    public function getMode(): RetrieveMode
-    {
-        return $this->mode;
-    }
-
-    public function getHelp(): string
-    {
-        return $this->help;
-    }
 
     public function getLabels(): array
     {
@@ -55,18 +31,22 @@ final class FailedLoginsMetric implements MetricInterface
         return $this->labels;
     }
 
-    public function getValue(): int
+    public function getValue(): int | null
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_log');
-        $queryBuilder->resetRestrictions();
-        $queryBuilder->select('uid')->from('sys_log')
-            ->where(
-                $queryBuilder->expr()->eq('error', 3)
-            )
-            ->andWhere(
-                $queryBuilder->expr()->eq('type', 255)
-            );
-        $logCount = $queryBuilder->executeQuery()->rowCount();
-        return (int)$logCount;
+        try {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_log');
+            $queryBuilder->resetRestrictions();
+            $queryBuilder->select('uid')->from('sys_log')
+                ->where(
+                    $queryBuilder->expr()->eq('error', 3)
+                )
+                ->andWhere(
+                    $queryBuilder->expr()->eq('type', 255)
+                );
+            $logCount = $queryBuilder->executeQuery()->rowCount();
+            return (int)$logCount;
+        } catch (\Throwable $e) {
+            return -1;
+        }
     }
 }

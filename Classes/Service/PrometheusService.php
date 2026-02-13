@@ -36,6 +36,9 @@ class PrometheusService
         $collectorRegistry = new CollectorRegistry(new InMemory());
         foreach ($metrics as $metric) {
             try {
+                if ($metric->getValue() == -1) {
+                    continue;
+                }
                 match ($metric->getType()) {
                     MetricType::GAUGE => $this->renderGauge($collectorRegistry, $metric),
                     MetricType::COUNTER => $this->renderCounter($collectorRegistry, $metric),

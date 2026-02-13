@@ -11,7 +11,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class SchedulerTaskMetric implements MetricInterface
+final class SchedulerTaskMetric extends AbstractMetric
 {
     protected string $name = 'failed_scheduler_tasks';
 
@@ -24,31 +24,6 @@ final class SchedulerTaskMetric implements MetricInterface
     protected array $labels = [];
 
     protected string $help = 'Number of failed scheduler tasks';
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getType(): MetricType
-    {
-        return $this->type;
-    }
-
-    public function getMode(): RetrieveMode
-    {
-        return $this->mode;
-    }
-
-    public function getHelp(): string
-    {
-        return $this->help;
-    }
 
     public function getLabels(): array
     {
@@ -64,18 +39,23 @@ final class SchedulerTaskMetric implements MetricInterface
             return -1;
         }
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_scheduler_task');
-        $count = $queryBuilder
-            ->count('uid')
-            ->from('tx_scheduler_task')
-            ->where(
-                $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
-                $queryBuilder->expr()->eq('disable', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
-                $queryBuilder->expr()->neq('lastexecution_failure', $queryBuilder->createNamedParameter(''))
-            )
-            ->andWhere(
-                $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
-            )->executeQuery()->fetchOne();
-        return (int)$count;
+        try {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_scheduler_task');
+            $count = $queryBuilder
+                ->count('uid')
+                ->from('tx_scheduler_task')
+                ->where(
+                    $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
+                    $queryBuilder->expr()->eq('disable', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
+                    $queryBuilder->expr()->neq('lastexecution_failure', $queryBuilder->createNamedParameter(''))
+                )
+                ->andWhere(
+                    $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT))
+                )->executeQuery()->fetchOne();
+            return (int)$count;
+        } catch (\Throwable $e) {
+            // Table doesn't exist or schema not ready yet
+            return -1;
+        }
     }
 }

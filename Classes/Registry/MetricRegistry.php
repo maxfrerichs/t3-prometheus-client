@@ -43,6 +43,7 @@ class MetricRegistry
      * Filter registered by their retrieve mode
      *
      * @return MetricInterface[]
+     * @deprecated
      */
     public function getMetricsByRetrieveMode(RetrieveMode $mode): array
     {

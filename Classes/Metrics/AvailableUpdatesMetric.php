@@ -10,7 +10,7 @@ use MFR\T3PromClient\Service\CoreVersionService;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class AvailableUpdatesMetric implements MetricInterface
+final class AvailableUpdatesMetric extends AbstractMetric
 {
     protected string $name = 'available_updates';
 
@@ -23,31 +23,6 @@ final class AvailableUpdatesMetric implements MetricInterface
     protected array $labels = [];
 
     protected string $help = 'Number of available updates for this instance';
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getType(): MetricType
-    {
-        return $this->type;
-    }
-
-    public function getMode(): RetrieveMode
-    {
-        return $this->mode;
-    }
-
-    public function getHelp(): string
-    {
-        return $this->help;
-    }
 
     public function getLabels(): array
     {

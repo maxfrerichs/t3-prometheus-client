@@ -8,7 +8,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class ServiceAvailabilityMetric implements MetricInterface
+final class ServiceAvailabilityMetric extends AbstractMetric
 {
     protected string $name = 'service_availability';
 
@@ -56,23 +56,28 @@ final class ServiceAvailabilityMetric implements MetricInterface
     }
     public function getValue(): int
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_log');
-        $queryBuilder->resetRestrictions();
-        $queryBuilder->select('uid')->from('sys_log')
-            ->where(
-                $queryBuilder->expr()->eq('error', 2)
-            )
-            ->andWhere(
-                $queryBuilder->expr()->eq('type', 5)
-            )
-            ->andWhere(
-                $queryBuilder->expr()->like(
-                    'details',
-                    $queryBuilder->quote('%ServiceUnavailableException%')
+        try {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_log');
+            $queryBuilder->resetRestrictions();
+            $queryBuilder->select('uid')->from('sys_log')
+                ->where(
+                    $queryBuilder->expr()->eq('error', 2)
                 )
-            );
+                ->andWhere(
+                    $queryBuilder->expr()->eq('type', 5)
+                )
+                ->andWhere(
+                    $queryBuilder->expr()->like(
+                        'details',
+                        $queryBuilder->quote('%ServiceUnavailableException%')
+                    )
+                );
 
-        $logCount = $queryBuilder->executeQuery()->rowCount();
-        return (int)$logCount;
+            $logCount = $queryBuilder->executeQuery()->rowCount();
+            return (int)$logCount;
+        } catch (\Throwable $e) {
+            // Table doesn't exist or schema not ready yet
+            return -1;
+        }
     }
 }
