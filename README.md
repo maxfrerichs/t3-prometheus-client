@@ -79,10 +79,7 @@ final class MyCustomMetric extends AbstractMetric
 ```
 
 Afterwards, flush caches to re-build the DI container.
-
 Note: Any class implementing `MetricInterface` is automatically registered.
-
-📚 See [Custom Metrics documentation](Documentation/API/CustomMetrics/Index.rst) for advanced examples.
 
 ## Modifying Metrics at Runtime
 
@@ -104,31 +101,10 @@ final readonly class FilterMetricsListener
 }
 ```
 
-See [Events documentation](Documentation/API/Events/Index.rst) for comprehensive examples.
-
 ## Documentation
 
 Complete documentation is available on https://docs.typo3.org/p/maxfrerichs/t3-prometheus-client/
 
-## Configuration Examples
-
-### VirtualHost for separate port (Apache)
-
-```apache
-<VirtualHost *:9090>
-    ServerName your-domain.com
-    DocumentRoot /var/www/html/public
-
-    <Directory /var/www/html/public>
-        AllowOverride All
-        Require all granted
-    </Directory>
-
-    # Set Host header for TYPO3
-    RequestHeader set Host "your-domain.com"
-</VirtualHost>
-```
-Keep in mind that port 9090 should not be exposed to the public.
 
 ## Known Issues
 

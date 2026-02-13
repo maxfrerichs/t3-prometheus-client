@@ -2,9 +2,9 @@
 
 $EM_CONF['t3_prometheus_client'] = [
     'title' => 'Prometheus client for TYPO3',
-    'description' => 'Provides a client for Prometheus to aggregate timeseries data from various metrics. Supports both scraping and pushing metrics to pushgateway',
+    'description' => 'Provides a client for Prometheus to aggregate timeseries data from various metrics.',
     'category' => 'services',
-    'version' => '0.10.3',
+    'version' => '0.11',
     'state' => 'beta',
     'clearCacheOnLoad' => 0,
     'author' => 'Max Frerichs',
