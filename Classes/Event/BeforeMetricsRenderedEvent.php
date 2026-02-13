@@ -18,18 +18,18 @@ final class BeforeMetricsRenderedEvent
 
     public function __construct(array &$metrics)
     {
-        $this->metrics = $metrics;
+        $this->metrics = &$metrics;
     }
 
     /**
      * @return MetricInterface[]
      */
-    public function getMetrics()
+    public function getMetrics(): array
     {
         return $this->metrics;
     }
 
-    public function setMetrics(array $metrics)
+    public function setMetrics(array $metrics): void
     {
         $this->metrics = $metrics;
     }
