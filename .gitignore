@@ -13,3 +13,6 @@ composer.json.orig
 composer.json.testing
 bck-runTests.sh
 ext_conf_template.dev.txt
+Documentation-GENERATED-temp
+.phpactor.json
+Build/phpunit/.phpunit.cache

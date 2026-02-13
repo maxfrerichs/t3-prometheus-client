@@ -33,3 +33,5 @@ More pages
    Server/Index
    Metrics/Index
    Prometheus/Index
+
+Continue with :ref:`installation` to set up the extension.
