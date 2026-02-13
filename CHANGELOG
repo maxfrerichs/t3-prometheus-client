@@ -1,3 +1,6 @@
+[RELEASE] Release of t3-prometheus-client 0.10.3
+[BUGFIX] store metrics as references in BeforeMetricsRenderedEvent
+
 [RELEASE] Release of t3-prometheus-client 0.10.2
 [TASK] rework GitHub CI, add more tests
 
