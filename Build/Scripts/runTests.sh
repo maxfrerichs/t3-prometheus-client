@@ -478,7 +478,7 @@ case ${TEST_SUITE} in
             if [ ${TYPO3} -eq 14 ]; then
               composer require typo3/cms-core:^14.1 --dev -W --no-progress --no-interaction
               composer prepare-tests
-            if [ ${TYPO3} -eq 13 ]; then
+            elif [ ${TYPO3} -eq 13 ]; then
               composer require typo3/cms-core:^13.4 --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 12 ]; then
