@@ -12,6 +12,9 @@ interface MetricInterface
     public function getName(): string;
     public function getNamespace(): string;
     public function getType(): MetricType;
+    /**
+     * @deprecated
+     */
     public function getMode(): RetrieveMode;
     public function getHelp(): string;
     public function getLabels(): array;

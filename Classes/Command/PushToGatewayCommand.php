@@ -11,6 +11,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
+/**
+ * @deprecated
+ */
 final class PushToGatewayCommand extends Command
 {
     public function __construct(
