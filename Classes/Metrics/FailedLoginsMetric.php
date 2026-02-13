@@ -31,7 +31,7 @@ final class FailedLoginsMetric extends AbstractMetric
         return $this->labels;
     }
 
-    public function getValue(): int | float
+    public function getValue(): int
     {
         try {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('sys_log');
