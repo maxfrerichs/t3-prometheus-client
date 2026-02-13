@@ -78,10 +78,3 @@ t3_prometheus_client.
 
 :Rendered:
     |today|
-
-..  Meta Menu
-
-.. toctree::
-   :hidden:
-
-   Sitemap
