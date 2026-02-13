@@ -67,7 +67,7 @@ class BeforeMetricsRenderedEventTest extends FunctionalTestCase
             public function getMode(): RetrieveMode { return RetrieveMode::SCRAPE; }
             public function getHelp(): string { return 'Test metric'; }
             public function getLabels(): array { return $this->labels; }
-            public function getValue(): int|float { return 1; }
+            public function getValue(): int { return 1; }
         };
     }
 }
