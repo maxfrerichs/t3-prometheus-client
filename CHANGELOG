@@ -1,3 +1,7 @@
+[RELEASE] Release of t3-prometheus-client 0.10.4
+[BUGFIX] check for request target before authentication check
+[TASK] add test for prometheus middleware
+
 [RELEASE] Release of t3-prometheus-client 0.10.3
 [BUGFIX] store metrics as references in BeforeMetricsRenderedEvent
 
