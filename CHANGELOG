@@ -1,3 +1,6 @@
+[RELEASE] Release of t3-prometheus-client 0.10.5
+[TASK] update API base URL in CoreVersionService
+
 [RELEASE] Release of t3-prometheus-client 0.10.4
 [BUGFIX] check for request target before authentication check
 [TASK] add test for prometheus middleware
