@@ -31,7 +31,7 @@ class CoreVersionService
      *
      * @var string
      */
-    protected $apiBaseUrl = 'https://get.typo3.org/v1/api/';
+    protected $apiBaseUrl = 'https://get.typo3.org/api/v1/';
 
     /**
      * Development git checkout versions always end with '-dev'. They are
