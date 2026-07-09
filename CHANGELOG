@@ -1,3 +1,6 @@
+[RELEASE] Release of t3-prometheus-client 0.11.0
+[TASK] compatibility with TYPO3 14.3 LTS
+
 [RELEASE] Release of t3-prometheus-client 0.10.5
 [TASK] update API base URL in CoreVersionService
 
