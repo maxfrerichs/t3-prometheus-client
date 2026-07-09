@@ -6,7 +6,6 @@ services:
 
   MFR\T3PromClient\:
     resource: '../Classes/*'
-    exclude: '../Classes/Domain/Model/*'
 
   MFR\T3PromClient\Middleware\PrometheusMiddleware:
     arguments:
