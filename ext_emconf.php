@@ -8,11 +8,11 @@ $EM_CONF['t3_prometheus_client'] = [
     'state' => 'beta',
     'clearCacheOnLoad' => 0,
     'author' => 'Max Frerichs',
-    'author_email' => 'maxfrerichs@gmx.de',
+    'author_email' => 'typo3@maxfrerichs.dev',
     'author_company' => 'LfdA - Labor für digitale Angelegenheiten GmbH',
     'constraints' => [
         'depends' => [
-            'typo3' => '12.4.0-13.4.99',
+            'typo3' => '13.4.0-14.3.99',
         ],
         'conflicts' => [],
         'suggests' => [],

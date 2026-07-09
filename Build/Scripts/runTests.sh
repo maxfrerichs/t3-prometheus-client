@@ -142,18 +142,16 @@ Options:
             - podman (default)
             - docker
 
-    -p <8.0|8.1|8.2|8.3|8.4>
+    -p <8.2|8.3|8.4>
         Specifies the PHP minor version to be used
-            - 8.1: use PHP 8.1
             - 8.2 (default): use PHP 8.2
             - 8.3: use PHP 8.3
             - 8.4: use PHP 8.4
 
-    -t <12|13|14>
+    -t <13|14>
         Specifies the TYPO3 Core version to be used - Only with -s composerInstall|phpstan|acceptance
-          - 12: Use TYPO3 v12.4
           - 13 (default): Use TYPO3 v13.x
-          - 14 (default): Use TYPO3 v14.x
+          - 14: Use TYPO3 v14.x
 
 
     -d <sqlite|mariadb|mysql|postgres>
@@ -327,7 +325,7 @@ while getopts "a:b:s:d:i:t:p:xy:o:nhug" OPT; do
             ;;
         t)
             TYPO3=${OPTARG}
-            if ! [[ ${TYPO3} =~ ^(12|13|14)$ ]]; then
+            if ! [[ ${TYPO3} =~ ^(13|14)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
           ;;
@@ -476,13 +474,10 @@ case ${TEST_SUITE} in
           ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name composer-install-${SUFFIX} -e COMPOSER_CACHE_DIR=.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} /bin/sh -c "
             php -v | grep '^PHP';
             if [ ${TYPO3} -eq 14 ]; then
-              composer require typo3/cms-core:^14.1 --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^14.3 --dev -W --no-progress --no-interaction
               composer prepare-tests
             elif [ ${TYPO3} -eq 13 ]; then
               composer require typo3/cms-core:^13.4 --dev -W --no-progress --no-interaction
-              composer prepare-tests
-            elif [ ${TYPO3} -eq 12 ]; then
-              composer require typo3/cms-core:^12.4 --dev -W --no-progress --no-interaction
               composer prepare-tests
             else
               composer install --dev --no-progress --no-interaction
@@ -501,13 +496,10 @@ case ${TEST_SUITE} in
           ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name composer-validate-${SUFFIX} -e COMPOSER_CACHE_DIR=.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} /bin/sh -c "
             php -v | grep '^PHP';
             if [ ${TYPO3} -eq 14 ]; then
-              composer require typo3/cms-core:^14.0 --dev -W --no-progress --no-interaction
-              composer prepare-tests
-            elif [ ${TYPO3} -eq 13 ]; then
-              composer require typo3/cms-core:^13.0 --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^14.3 --dev -W --no-progress --no-interaction
               composer prepare-tests
             else
-              composer require typo3/cms-core:^12.4 --dev -W --no-progress --no-interaction
+              composer require typo3/cms-core:^13.0 --dev -W --no-progress --no-interaction
               composer prepare-tests
             fi
             composer validate

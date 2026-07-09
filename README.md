@@ -1,7 +1,7 @@
 # TYPO3 Extension 't3-prometheus-client'
 
 ## About this extension:
-This extension provides a client for Prometheus to access and process timeseries data from system status informations (more info on "How it works"). 
+This extension provides a client for Prometheus to access and process timeseries data from system status informations (more info on "How it works").
 Both scraping and pushing to a gateway are supported.
 
 ## Requirements
@@ -31,4 +31,4 @@ Registration of custom metrics is possible by creating a class that implements M
 * Write more documentation [WIP]
 
 ## Contribution:
-Every contribution is appreciated. Open an issue, tell me your ideas, request a specific feature, report bugs and so on. You can also write an e-mail to "maxfrerichs@gmx.de" or "max.frerichs@lfda.de" :-)
+Every contribution is appreciated. Open an issue, tell me your ideas, request a specific feature, report bugs and so on. You can also write an e-mail to "typo3@maxfrerichs.dev" or "max.frerichs@lfda.de" :-)
