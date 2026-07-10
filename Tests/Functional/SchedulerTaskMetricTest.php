@@ -15,7 +15,6 @@ class SchedulerTaskMetricTest extends FunctionalTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/sys_log.csv');
         $this->subject = new SchedulerTaskMetric();
     }
 
